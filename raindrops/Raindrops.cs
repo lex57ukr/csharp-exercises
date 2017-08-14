@@ -4,7 +4,7 @@ using System.Linq;
 
 public static class Raindrops
 {
-    static readonly (int factor, string code)[] Codes = new [] {
+    static readonly (int factor, string code)[] Codes = {
         (factor: 3, code: "Pling"),
         (factor: 5, code: "Plang"),
         (factor: 7, code: "Plong"),

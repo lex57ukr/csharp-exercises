@@ -1,0 +1,45 @@
+{
+    "version": "2.0.0",
+    "runner": "terminal",
+    "command": "dotnet",
+    "options": {
+        "cwd": "${fileDirname}"
+    },
+    "tasks": [
+        {
+            "taskName": "build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "taskName": "restore",
+            "group": "build",
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "taskName": "test",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        },
+        {
+            "taskName": "Submit Exercise",
+            "type": "shell",
+            "command": "exercism",
+            "args": [
+                "s",
+                "${file}"
+            ]
+        },
+        {
+            "taskName": "Fetch New Exercise",
+            "type": "shell",
+            "command": "exercism",
+            "args": [ "f" ]
+        }
+    ]
+}

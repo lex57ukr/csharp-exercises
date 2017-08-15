@@ -6,6 +6,7 @@ using System.Collections.Immutable;
 
 using Plants = System.Collections.Generic.IEnumerable<Plant>;
 
+
 public enum Plant
 {
     Violets,
@@ -68,6 +69,7 @@ public class Garden
     static IEnumerable<Plants> AsPlantedCups(Plants plants)
         => plants.BatchMap(size: CupsPerPerson, mapper: x => x);
 }
+
 
 static class EnumerableExtensions
 {

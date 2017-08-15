@@ -1,40 +1,29 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 
 public class School
 {
-    IDictionary<int, IList<string>> _rostersByGrades
-        = new Dictionary<int, IList<string>>();
+    IImmutableList<(int grade, string name)> _roster
+        = ImmutableList<(int grade, string name)>.Empty;
 
     public void Add(string student, int grade)
     {
-        IList<string> roster;
-        if ( ! _rostersByGrades.TryGetValue(grade, out roster))
-        {
-            _rostersByGrades.Add(grade, roster = new List<string>());
-        }
-
-        roster.Add(student);
+        var rec = (grade: grade, name: student);
+        _roster = _roster.Add(rec);
     }
 
-    public IEnumerable<string> Roster()
-    {
-        return _rostersByGrades
-            .Keys
-            .OrderBy(grade => grade)
-            .SelectMany(Grade);
-    }
+    public IEnumerable<int> Grades() => _roster
+        .OrderBy(r => r.grade)
+        .Select(r => r.grade)
+        .Distinct();
 
-    public IEnumerable<string> Grade(int grade)
-    {
-        IList<string> roster;
-        if ( ! _rostersByGrades.TryGetValue(grade, out roster))
-        {
-            return Enumerable.Empty<string>();
-        }
+    public IEnumerable<string> Roster() => Grades().SelectMany(Grade);
 
-        return roster.OrderBy(name => name);
-    }
+    public IEnumerable<string> Grade(int grade) => _roster
+        .Where(r => r.grade == grade)
+        .OrderBy(r => r.name)
+        .Select(r => r.name);
 }

@@ -11,14 +11,12 @@ public class School
     public void Add(string student, int grade)
     {
         IList<string> roster;
-        if (_rostersByGrades.TryGetValue(grade, out roster))
+        if ( ! _rostersByGrades.TryGetValue(grade, out roster))
         {
-            roster.Add(student);
+            _rostersByGrades.Add(grade, roster = new List<string>());
         }
-        else
-        {
-            _rostersByGrades.Add(grade, new List<string> { student });
-        }
+
+        roster.Add(student);
     }
 
     public IEnumerable<string> Roster()
@@ -37,8 +35,6 @@ public class School
             return Enumerable.Empty<string>();
         }
 
-        return roster
-            .AsEnumerable()
-            .OrderBy(name => name);
+        return roster.OrderBy(name => name);
     }
 }

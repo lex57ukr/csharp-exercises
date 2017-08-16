@@ -37,14 +37,10 @@ public class Clock
     }
 
     public Clock Add(int minutesToAdd)
-    {
-        return new Clock(this.TotalMinutes + minutesToAdd);
-    }
+        => new Clock(this.TotalMinutes + minutesToAdd);
 
     public Clock Subtract(int minutesToSubtract)
-    {
-        return new Clock(this.TotalMinutes - minutesToSubtract);
-    }
+        => new Clock(this.TotalMinutes - minutesToSubtract);
 
     public override string ToString()
         => $"{this.Hours:00}:{this.Minutes:00}";
@@ -55,5 +51,6 @@ public class Clock
     public override bool Equals(object obj)
         => Equals(obj as Clock);
 
-    public override int GetHashCode() => this.TotalMinutes;
+    public override int GetHashCode()
+        => this.TotalMinutes;
 }

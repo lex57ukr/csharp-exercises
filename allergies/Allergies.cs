@@ -17,7 +17,7 @@ public class Allergies
         (score: 128, allergen: "cats"),
     };
 
-    IImmutableList<string> _allergies;
+    ImmutableList<string> _allergies;
 
     public Allergies(int mask)
     {
@@ -31,5 +31,5 @@ public class Allergies
         => _allergies.Contains(allergy);
 
     public IList<string> List()
-        => _allergies as IList<string>;
+        => _allergies;
 }

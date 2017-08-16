@@ -52,5 +52,8 @@ public class Clock
     public bool Equals(Clock other)
         => null != other && this.TotalMinutes == other.TotalMinutes;
 
+    public override bool Equals(object obj)
+        => Equals(obj as Clock);
+
     public override int GetHashCode() => this.TotalMinutes;
 }

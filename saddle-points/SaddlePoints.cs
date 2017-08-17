@@ -34,7 +34,7 @@ public class SaddlePoints
     }
 
     public IEnumerable<Tuple<int, int>> Calculate()
-        => Indices().Where(IsSaddlePoint);
+        => Indices().AsParallel().Where(IsSaddlePoint);
 
     IEnumerable<Tuple<int, int>> Indices() =>
         from x in Enumerable.Range(0, this.Width)

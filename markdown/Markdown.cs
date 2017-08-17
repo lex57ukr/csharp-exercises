@@ -5,38 +5,37 @@ using System.Text.RegularExpressions;
 public static class Markdown
 {
     private static string Wrap(string text, string tag)
-        => "<" + tag + ">" + text + "</" + tag + ">";
+        => $"<{tag}>{text}</{tag}>";
 
     private static bool IsTag(string text, string tag)
-        => text.StartsWith("<" + tag + ">");
+        => text.StartsWith($"<{tag}>");
 
     private static string Parse(
         string markdown,
         string delimiter,
         string tag
-    )
-    {
-        var pattern = delimiter + "(.+)" + delimiter;
-        var replacement = "<" + tag + ">$1</" + tag + ">";
-        return Regex.Replace(markdown, pattern, replacement);
-    }
+    ) => Regex.Replace(
+        input:       markdown,
+        pattern:     $"{delimiter}(.+){delimiter}",
+        replacement: Wrap("$1", tag)
+    );
 
     private static string Parse__(string markdown)
-        => Parse(markdown, "__", "strong");
+        => Parse(markdown, delimiter: "__", tag: "strong");
 
     private static string Parse_(string markdown)
-        => Parse(markdown, "_", "em");
+        => Parse(markdown, delimiter: "_", tag: "em");
 
     private static string ParseText(string markdown, bool list)
     {
-        var parsedText = Parse_(Parse__((markdown)));
+        var parsedText = Parse_(Parse__(markdown));
         if (list)
         {
             return parsedText;
         }
         else
         {
-            return Wrap(parsedText, "p");
+            return Wrap(parsedText, tag: "p");
         }
     }
 
@@ -93,8 +92,8 @@ public static class Markdown
         if (markdown.StartsWith("*"))
         {
             var innerHtml = Wrap(
-                ParseText(markdown.Substring(2), true),
-                "li"
+                ParseText(markdown.Substring(2), list: true),
+                tag: "li"
             );
 
             if (list)
@@ -159,9 +158,9 @@ public static class Markdown
 
     public static string Parse(string markdown)
     {
-        var lines = markdown.Split('\n');
+        var lines  = markdown.Split('\n');
         var result = "";
-        var list = false;
+        var list   = false;
 
         for (int i = 0; i < lines.Length; i++)
         {

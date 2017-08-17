@@ -1,180 +1,127 @@
 ﻿using System;
+using System.Text;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 
 public static class Markdown
 {
-    private static string Wrap(string text, string tag)
+    static readonly (string delimiter, string tag)[] TextMarkup = {
+        (delimiter: "__", tag: "strong"),
+        (delimiter: "_",  tag: "em"),
+    };
+
+    static readonly Func<string, bool, (string html, bool list)>[] Parsers = {
+        ParseHeader,
+        ParseLineItem,
+        ParseParagraph
+    };
+
+    private static string Wrap(this string text, string tag)
         => $"<{tag}>{text}</{tag}>";
 
-    private static bool IsTag(string text, string tag)
-        => text.StartsWith($"<{tag}>");
+    private static string WrapIf(this string text, string tag, bool cond)
+        => cond ? text.Wrap(tag) : text;
 
     private static string Parse(
-        string markdown,
+        this string markdown,
         string delimiter,
         string tag
     ) => Regex.Replace(
         input:       markdown,
         pattern:     $"{delimiter}(.+){delimiter}",
-        replacement: Wrap("$1", tag)
+        replacement: "$1".Wrap(tag)
     );
 
-    private static string Parse__(string markdown)
-        => Parse(markdown, delimiter: "__", tag: "strong");
+    private static string ParseText(this string markdown, bool list)
+        => TextMarkup.Aggregate(
+            markdown,
+            (text, info) => text.Parse(info.delimiter, info.tag)
+        ).WrapIf("p", ! list);
 
-    private static string Parse_(string markdown)
-        => Parse(markdown, delimiter: "_", tag: "em");
-
-    private static string ParseText(string markdown, bool list)
-    {
-        var parsedText = Parse_(Parse__(markdown));
-        if (list)
-        {
-            return parsedText;
-        }
-        else
-        {
-            return Wrap(parsedText, tag: "p");
-        }
-    }
-
-    private static string ParseHeader(
+    private static (string html, bool list) ParseHeader(
         string markdown,
-        bool list,
-        out bool inListAfter
+        bool list
     )
     {
-        var count = 0;
-
-        for (int i = 0; i < markdown.Length; i++)
-        {
-            if (markdown[i] == '#')
-            {
-                count += 1;
-            }
-            else
-            {
-                break;
-            }
-        }
-
+        var count = markdown.Count(c => c == '#');
         if (count == 0)
         {
-            inListAfter = list;
-            return null;
+            return (null, list);
         }
 
-        var headerTag = "h" + count;
-        var headerHtml = Wrap(
-            markdown.Substring(count + 1),
-            headerTag
+        var headerHtml = markdown
+            .Substring(count + 1)
+            .Wrap($"h{count}");
+
+        return (
+            list ? $"</ul>{headerHtml}" : headerHtml,
+            false
         );
-
-        if (list)
-        {
-            inListAfter = false;
-            return "</ul>" + headerHtml;
-        }
-        else
-        {
-            inListAfter = false;
-            return headerHtml;
-        }
     }
 
-    private static string ParseLineItem(
+    private static (string html, bool list) ParseLineItem(
         string markdown,
-        bool list,
-        out bool inListAfter
+        bool list
     )
     {
-        if (markdown.StartsWith("*"))
+        if ( ! markdown.StartsWith("*"))
         {
-            var innerHtml = Wrap(
-                ParseText(markdown.Substring(2), list: true),
-                tag: "li"
-            );
-
-            if (list)
-            {
-                inListAfter = true;
-                return innerHtml;
-            }
-            else
-            {
-                inListAfter = true;
-                return "<ul>" + innerHtml;
-            }
+            return (null, list);
         }
 
-        inListAfter = list;
-        return null;
+        var innerHtml = markdown
+            .Substring(2)
+            .ParseText(list: true)
+            .Wrap("li");
+
+        return (
+            list ? innerHtml : $"<ul>{innerHtml}",
+            true
+        );
     }
 
-    private static string ParseParagraph(
+    private static (string html, bool list) ParseParagraph(
         string markdown,
-        bool list,
-        out bool inListAfter
+        bool list
     )
     {
-        if ( ! list)
-        {
-            inListAfter = false;
-            return ParseText(markdown, list);
-        }
-        else
-        {
-            inListAfter = false;
-            return "</ul>" + ParseText(markdown, list);
-        }
+        var html = markdown.ParseText(list);
+        return (
+            list ? $"</ul>{html}" : html,
+            false
+        );
     }
 
-    private static string ParseLine(
-        string markdown,
-        bool list,
-        out bool inListAfter
-    )
-    {
-        var result = ParseHeader(markdown, list, out inListAfter);
-
-        if (result == null)
-        {
-            result = ParseLineItem(markdown, list, out inListAfter);
-        }
-
-        if (result == null)
-        {
-            result = ParseParagraph(markdown, list, out inListAfter);
-        }
-
-        if (result == null)
-        {
-            throw new ArgumentException("Invalid markdown");
-        }
-
-        return result;
-    }
+    private static (string html, bool line) ParseLine(
+        this string markdown,
+        bool list
+    ) => Parsers.Select(p => p(markdown, list))
+                .FirstOrDefault(r => r.html != null);
 
     public static string Parse(string markdown)
     {
         var lines  = markdown.Split('\n');
-        var result = "";
+        var result = new StringBuilder();
         var list   = false;
 
         for (int i = 0; i < lines.Length; i++)
         {
-            var lineResult = ParseLine(lines[i], list, out list);
-            result += lineResult;
+            var (html, newList) = ParseLine(lines[i], list);
+            if (html == null)
+            {
+                throw new ArgumentException("Invalid markdown");
+            }
+
+            result.Append(html);
+            list = newList;
         }
 
         if (list)
         {
-            return result + "</ul>";
+            result.Append("</ul>");
         }
-        else
-        {
-            return result;
-        }
+
+        return result.ToString();
     }
 }

@@ -50,12 +50,12 @@ public static class Markdown
             return (null, list);
         }
 
-        var headerHtml = markdown
+        var html = markdown
             .Substring(count + 1)
             .Wrap($"h{count}");
 
         return (
-            list ? $"</ul>{headerHtml}" : headerHtml,
+            list ? $"</ul>{html}" : html,
             false
         );
     }
@@ -70,13 +70,13 @@ public static class Markdown
             return (null, list);
         }
 
-        var innerHtml = markdown
+        var html = markdown
             .Substring(2)
             .AsHtml()
             .Wrap("li");
 
         return (
-            list ? innerHtml : $"<ul>{innerHtml}",
+            list ? html : $"<ul>{html}",
             true
         );
     }
@@ -96,11 +96,11 @@ public static class Markdown
         );
     }
 
-    private static (string html, bool line) ParseLine(
+    private static (string html, bool list) ParseLine(
         this string markdown,
         bool list
     ) => Parsers.Select(p => p(markdown, list))
-                .FirstOrDefault(r => r.html != null);
+                .First(r => r.html != null);
 
     public static string Parse(string markdown)
     {
@@ -111,10 +111,6 @@ public static class Markdown
         for (int i = 0; i < lines.Length; i++)
         {
             var (html, newList) = ParseLine(lines[i], list);
-            if (html == null)
-            {
-                throw new ArgumentException("Invalid markdown");
-            }
 
             result.Append(html);
             list = newList;

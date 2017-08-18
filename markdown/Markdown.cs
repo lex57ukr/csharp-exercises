@@ -22,86 +22,73 @@ public static class Markdown
         .Aggregate(
             (buff: new StringBuilder(), list: false),
             (acc, line) => {
-                var (html, list) = line.Parse(acc.list);
-                acc.buff.Append(html);
-                return (acc.buff, list);
-            }
-        ).FinalizeHtml();
+                var html = Parsers
+                    .Select(parse => parse(line))
+                    .First(r => null != r);
 
-    private static (string html, bool list) Parse(
-        this string markdown,
+                return acc.Append(html, line.IsListItem());
+            }
+        ).CloseList().ToString();
+
+    static (StringBuilder buff, bool list) Append(
+        this (StringBuilder buff, bool list) acc,
+        string html,
         bool list
     )
     {
-        var html = Parsers
-            .Select(parse => parse(markdown))
-            .First(r => null != r);
-
-        var newList = markdown.IsListItem();
-
-        if (list == newList)
+        if (list == acc.list)
         {
-            return (html, list);
+            acc.buff.Append(html);
+        }
+        else if (list)
+        {
+            acc.buff.OpenList().Append(html);
+        }
+        else
+        {
+            acc.buff.Append(html).CloseList();
         }
 
-        if (newList)
-        {
-            return (html.OpenList(), list: true);
-        }
-
-        return (html.CloseList(), list: false);
+        return (acc.buff, list);
     }
 
-    private static string FinalizeHtml(this (StringBuilder, bool) acc)
+    static StringBuilder CloseList(this (StringBuilder, bool) acc)
     {
         var (buff, list) = acc;
-        return list
-            ? buff.ToString().CloseList()
-            : buff.ToString();
+        return list ? buff.CloseList() : buff;
     }
 
-    private static bool IsListItem(this string text)
+    static StringBuilder CloseList(this StringBuilder buff)
+        => buff.Append("</ul>");
+
+    static StringBuilder OpenList(this StringBuilder buff)
+        => buff.Append("<ul>");
+
+    static bool IsListItem(this string text)
         => text.StartsWith("*");
 
-    private static string OpenList(this string html)
-        => "<ul>" + html;
-
-    private static string CloseList(this string html)
-        => html + "</ul>";
-
-    private static string ParseHeader(string markdown)
+    static string ParseHeader(string markdown)
     {
         var count = markdown
             .TakeWhile(c => c == '#')
             .Count();
 
-        if (count == 0)
-        {
-            return null;
-        }
-
-        return markdown
-            .Substring(count + 1)
-            .Wrap($"h{count}");
+        return count != 0
+            ? markdown.Substring(count + 1).Wrap($"h{count}")
+            : null;
     }
 
-    private static string ParseLineItem(string markdown)
+    static string ParseLineItem(string markdown)
     {
-        if (markdown.IsListItem())
-        {
-            return markdown
-                .Substring(2)
-                .AsHtml()
-                .Wrap("li");
-        }
-
-        return null;
+        return markdown.IsListItem()
+            ? markdown.Substring(2).AsHtml().Wrap("li")
+            : null;
     }
 
-    private static string ParseParagraph(string markdown)
+    static string ParseParagraph(string markdown)
         => markdown.AsHtml().Wrap("p");
 
-    private static string AsHtml(
+    static string AsHtml(
         this string markdown,
         string delimiter,
         string tag
@@ -111,12 +98,12 @@ public static class Markdown
         replacement: "$1".Wrap(tag)
     );
 
-    private static string AsHtml(this string markdown)
+    static string AsHtml(this string markdown)
         => TagMappings.Aggregate(
             markdown,
             (text, info) => text.AsHtml(info.delimiter, info.tag)
         );
 
-    private static string Wrap(this string text, string tag)
+    static string Wrap(this string text, string tag)
         => $"<{tag}>{text}</{tag}>";
 }

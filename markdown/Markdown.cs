@@ -44,7 +44,10 @@ public static class Markdown
         bool list
     )
     {
-        var count = markdown.Count(c => c == '#');
+        var count = markdown
+            .TakeWhile(c => c == '#')
+            .Count();
+
         if (count == 0)
         {
             return (null, list);

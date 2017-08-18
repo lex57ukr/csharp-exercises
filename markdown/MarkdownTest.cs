@@ -5,8 +5,8 @@ public class MarkdownTest
     [Fact]
     public void Parses_normal_text_as_a_paragraph()
     {
-        var input = "This will be a paragraph";
-        var expected = "<p>This will be a paragraph</p>";
+        var input = "This will be a # paragraph";
+        var expected = "<p>This will be a # paragraph</p>";
         Assert.Equal(expected, Markdown.Parse(input));
     }
 

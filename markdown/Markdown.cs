@@ -11,11 +11,20 @@ public static class Markdown
         (delimiter: "_",  tag: "em"),
     };
 
-    static readonly Func<string, bool, (string html, bool list)>[] Parsers = {
+    static readonly Func<string, string>[] Parsers = {
         ParseHeader,
         ParseLineItem,
         ParseParagraph
     };
+
+    private static bool IsListItem(this string text)
+        => text.StartsWith("*");
+
+    private static string OpenList(this string html)
+        => "<ul>" + html;
+
+    private static string CloseList(this string html)
+        => html + "</ul>";
 
     private static string Wrap(this string text, string tag)
         => $"<{tag}>{text}</{tag}>";
@@ -36,10 +45,7 @@ public static class Markdown
             (text, info) => text.AsHtml(info.delimiter, info.tag)
         );
 
-    private static (string html, bool list) ParseHeader(
-        string markdown,
-        bool list
-    )
+    private static string ParseHeader(string markdown)
     {
         var count = markdown
             .TakeWhile(c => c == '#')
@@ -47,80 +53,70 @@ public static class Markdown
 
         if (count == 0)
         {
-            return (null, list);
+            return null;
         }
 
-        var html = markdown
+        return markdown
             .Substring(count + 1)
             .Wrap($"h{count}");
-
-        return (
-            list ? $"</ul>{html}" : html,
-            false
-        );
     }
 
-    private static (string html, bool list) ParseLineItem(
-        string markdown,
-        bool list
-    )
+    private static string ParseLineItem(string markdown)
     {
-        if ( ! markdown.StartsWith("*"))
+        if ( ! markdown.IsListItem())
         {
-            return (null, list);
+            return null;
         }
 
-        var html = markdown
+        return markdown
             .Substring(2)
             .AsHtml()
             .Wrap("li");
-
-        return (
-            list ? html : $"<ul>{html}",
-            true
-        );
     }
 
-    private static (string html, bool list) ParseParagraph(
-        string markdown,
+    private static string ParseParagraph(string markdown)
+        => markdown.AsHtml().Wrap("p");
+
+    private static (string html, bool list) Parse(
+        this string markdown,
         bool list
     )
     {
-        var html = markdown
-            .AsHtml()
-            .Wrap("p");
+        var html = Parsers
+            .Select(parse => parse(markdown))
+            .First(r => null != r);
 
-        return (
-            list ? $"</ul>{html}" : html,
-            false
-        );
+        var newList = markdown.IsListItem();
+
+        if (list == newList)
+        {
+            return (html, list);
+        }
+
+        if (newList)
+        {
+            return (html.OpenList(), list: true);
+        }
+
+        return (html.CloseList(), list: false);
     }
 
-    private static (string html, bool list) ParseLine(
-        this string markdown,
-        bool list
-    ) => Parsers.Select(p => p(markdown, list))
-                .First(r => r.html != null);
+    public static string Parse(string markdown) => markdown
+        .Split('\n')
+        .Aggregate(
+            (buff: new StringBuilder(), list: false),
+            (acc, line) => {
+                var (html, list) = line.Parse(acc.list);
+                acc.buff.Append(html);
+                return (acc.buff, list);
+            }
+        ).FinalizeHtml();
 
-    public static string Parse(string markdown)
+    private static string FinalizeHtml(this (StringBuilder, bool) acc)
     {
-        var lines  = markdown.Split('\n');
-        var result = new StringBuilder();
-        var list   = false;
-
-        for (int i = 0; i < lines.Length; i++)
-        {
-            var (html, newList) = ParseLine(lines[i], list);
-
-            result.Append(html);
-            list = newList;
-        }
-
-        if (list)
-        {
-            result.Append("</ul>");
-        }
-
-        return result.ToString();
+        var (buff, list) = acc;
+        return list
+            ? buff.ToString().CloseList()
+            : buff.ToString();
     }
 }

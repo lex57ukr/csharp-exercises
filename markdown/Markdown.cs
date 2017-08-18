@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 public static class Markdown
 {
-    static readonly (string delimiter, string tag)[] TextMarkup = {
+    static readonly (string delimiter, string tag)[] TagMappings = {
         (delimiter: "__", tag: "strong"),
         (delimiter: "_",  tag: "em"),
     };
@@ -20,10 +20,7 @@ public static class Markdown
     private static string Wrap(this string text, string tag)
         => $"<{tag}>{text}</{tag}>";
 
-    private static string WrapIf(this string text, string tag, bool cond)
-        => cond ? text.Wrap(tag) : text;
-
-    private static string Parse(
+    private static string AsHtml(
         this string markdown,
         string delimiter,
         string tag
@@ -33,11 +30,11 @@ public static class Markdown
         replacement: "$1".Wrap(tag)
     );
 
-    private static string ParseText(this string markdown, bool list)
-        => TextMarkup.Aggregate(
+    private static string AsHtml(this string markdown)
+        => TagMappings.Aggregate(
             markdown,
-            (text, info) => text.Parse(info.delimiter, info.tag)
-        ).WrapIf("p", ! list);
+            (text, info) => text.AsHtml(info.delimiter, info.tag)
+        );
 
     private static (string html, bool list) ParseHeader(
         string markdown,
@@ -75,7 +72,7 @@ public static class Markdown
 
         var innerHtml = markdown
             .Substring(2)
-            .ParseText(list: true)
+            .AsHtml()
             .Wrap("li");
 
         return (
@@ -89,7 +86,10 @@ public static class Markdown
         bool list
     )
     {
-        var html = markdown.ParseText(list);
+        var html = markdown
+            .AsHtml()
+            .Wrap("p");
+
         return (
             list ? $"</ul>{html}" : html,
             false

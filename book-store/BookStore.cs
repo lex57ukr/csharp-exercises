@@ -22,12 +22,12 @@ public static class BookStore
             .Select(ImmutableQueue.CreateRange<int>)
             .ToImmutableArray();
 
-        IEnumerable<int> DiscountedGroupSizes() => Enumerable.Range(
+        var discountedGroupSizes = Enumerable.Range(
             start: MinDiscountedGroupSize,
             count: Math.Max(stacks.Length - 1, 1)
         );
 
-        return DiscountedGroupSizes()
+        return discountedGroupSizes
             .Select(groupSize => stacks.GroupByTitles(groupSize))
             .Select(Total)
             .DefaultIfEmpty(0)

@@ -7,16 +7,13 @@ using System.Collections.Generic;
 public static class BookStore
 {
     const double PricePerBook = 8.0;
-    static readonly (int books, double discount)[] Discounts = {
-        (books: 2, discount: 0.05),
-        (books: 3, discount: 0.10),
-        (books: 4, discount: 0.20),
-        (books: 5, discount: 0.25),
+    const int MinDiscountedGroupSize = 2;
+    static readonly (int groupSize, double discount)[] Discounts = {
+        (groupSize: 2, discount: 0.05),
+        (groupSize: 3, discount: 0.10),
+        (groupSize: 4, discount: 0.20),
+        (groupSize: 5, discount: 0.25),
     };
-
-    static int MinDiscountedGroupSize => Discounts
-        .Select(d => d.books)
-        .First();
 
     public static double Total(IEnumerable<int> books)
     {
@@ -25,77 +22,68 @@ public static class BookStore
             .Select(ImmutableQueue.CreateRange<int>)
             .ToImmutableArray();
 
-        if (stacks.IsEmpty)
-        {
-            return 0;
-        }
+        IEnumerable<int> DiscountedGroupSizes() => Enumerable.Range(
+            start: MinDiscountedGroupSize,
+            count: Math.Max(stacks.Length - 1, 1)
+        );
 
-        return Enumerable
-            .Range(MinDiscountedGroupSize, stacks.Length)
-            .AsParallel()
-            .Select(count => stacks.GroupBooks(count))
-            .Select(PriceOfGroups)
+        return DiscountedGroupSizes()
+            .Select(groupSize => stacks.GroupByTitles(groupSize))
+            .Select(Total)
+            .DefaultIfEmpty(0)
             .Min();
     }
 
-    static IEnumerable<IEnumerable<int>> GroupBooks(
-        this IEnumerable<ImmutableQueue<int>> stacks,
-        int maxBooksPerGroup
-    ) => stacks.GroupBooks(
-        maxBooksPerGroup,
-        ImmutableList<IEnumerable<int>>.Empty
-    );
+    static double Total(IEnumerable<IEnumerable<int>> groups) => groups
+        .Select(g => g.Count())
+        .Select(Total)
+        .Sum();
 
-    static IEnumerable<IEnumerable<int>> GroupBooks(
-        this IEnumerable<ImmutableQueue<int>> stacks,
-        int maxBooksPerGroup,
-        ImmutableList<IEnumerable<int>> groups
-    )
-    {
-        var res = stacks
-            .Take(maxBooksPerGroup)
-            .Aggregate(
-                (
-                    group: ImmutableList<int>.Empty,
-                    head:  ImmutableList<ImmutableQueue<int>>.Empty
-                ),
-                (acc, stack) => {
-                    var group = acc.group.Add(stack.Peek());
-                    var rem   = stack.Dequeue();
-                    return (
-                        group: group,
-                        head: (rem.IsEmpty ? acc.head : acc.head.Add(rem))
-                    );
-                }
-            );
+    static double Total(int groupSize) =>
+        PricePerBook * groupSize * (1 - Discount(groupSize));
 
-        if (res.group.IsEmpty)
-        {
-            return groups;
-        }
-
-        return GroupBooks(
-            res.head.Concat(stacks.Skip(maxBooksPerGroup)),
-            maxBooksPerGroup,
-            groups.Add(res.group)
-        );
-    }
-
-    static double Discount(int countOfBooks) => Discounts
-        .Where(d => d.books == countOfBooks)
+    static double Discount(int groupSize) => Discounts
+        .Where(d => d.groupSize == groupSize)
         .Select(d => d.discount)
         .FirstOrDefault();
 
-    static double PriceOfGroup(IEnumerable<int> books)
+    static IEnumerable<IEnumerable<int>> GroupByTitles(
+        this IEnumerable<ImmutableQueue<int>> stacks,
+        int groupSize
+    ) => stacks.GroupByTitles(
+        groupSize,
+        ImmutableList<IEnumerable<int>>.Empty
+    );
+
+    static IEnumerable<IEnumerable<int>> GroupByTitles(
+        this IEnumerable<ImmutableQueue<int>> stacks,
+        int groupSize,
+        ImmutableList<IEnumerable<int>> groups
+    )
     {
-        var countOfBooks = books.Count();
-
-        var fullPrice = PricePerBook * countOfBooks;
-        var discount  = fullPrice * Discount(countOfBooks);
-
-        return fullPrice - discount;
+        var (group, tail) = stacks.Slice(groupSize);
+        return group.IsEmpty
+            ? groups
+            : tail.GroupByTitles(groupSize, groups.Add(group));
     }
 
-    static double PriceOfGroups(IEnumerable<IEnumerable<int>> groups)
-        => groups.Select(PriceOfGroup).Sum();
+    static (ImmutableList<int>, IEnumerable<ImmutableQueue<int>>) Slice(
+        this IEnumerable<ImmutableQueue<int>> stacks,
+        int groupSize
+    ) => stacks
+        .Take(groupSize)
+        .Aggregate(
+            (
+                group: ImmutableList<int>.Empty,
+                tail:  stacks.Skip(groupSize).ToImmutableList()
+            ),
+            (acc, stack) => {
+                var group = acc.group.Add(stack.Peek());
+                var rem   = stack.Dequeue();
+                return (
+                    group: group,
+                    tail:  (rem.IsEmpty ? acc.tail : acc.tail.Add(rem))
+                );
+            }
+        );
 }

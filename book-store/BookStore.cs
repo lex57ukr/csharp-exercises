@@ -14,6 +14,10 @@ public static class BookStore
         (books: 5, discount: 0.25),
     };
 
+    static int MinDiscountedGroupSize => Discounts
+        .Select(d => d.books)
+        .First();
+
     public static double Total(IEnumerable<int> books)
     {
         var stacks = books
@@ -27,7 +31,7 @@ public static class BookStore
         }
 
         return Enumerable
-            .Range(1, stacks.Length)
+            .Range(MinDiscountedGroupSize, stacks.Length)
             .AsParallel()
             .Select(count => stacks.GroupBooks(count))
             .Select(PriceOfGroups)

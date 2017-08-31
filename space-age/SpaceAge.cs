@@ -5,17 +5,6 @@ public class SpaceAge
 {
     const int EarthYearSeconds = 31_557_600;
 
-    static class OrbitalPeriod
-    {
-        public const double Mercury = 0.2408467;
-        public const double Venus   = 0.61519726;
-        public const double Mars    = 1.8808158;
-        public const double Jupiter = 11.862615;
-        public const double Saturn  = 29.447498;
-        public const double Uranus  = 84.016846;
-        public const double Neptune = 164.79132;
-    }
-
     readonly long Seconds;
 
     public SpaceAge(long seconds)
@@ -25,25 +14,25 @@ public class SpaceAge
         => EarthYears();
 
     public double OnMercury()
-        => EarthYears(OrbitalPeriod.Mercury);
+        => EarthYears(orbitalPeriod: 0.2408467);
 
     public double OnVenus()
-        => EarthYears(OrbitalPeriod.Venus);
+        => EarthYears(orbitalPeriod: 0.61519726);
 
     public double OnMars()
-        => EarthYears(OrbitalPeriod.Mars);
+        => EarthYears(orbitalPeriod: 1.8808158);
 
     public double OnJupiter()
-        => EarthYears(OrbitalPeriod.Jupiter);
+        => EarthYears(orbitalPeriod: 11.862615);
 
     public double OnSaturn()
-        => EarthYears(OrbitalPeriod.Saturn);
+        => EarthYears(orbitalPeriod: 29.447498);
 
     public double OnUranus()
-        => EarthYears(OrbitalPeriod.Uranus);
+        => EarthYears(orbitalPeriod: 84.016846);
 
     public double OnNeptune()
-        => EarthYears(OrbitalPeriod.Neptune);
+        => EarthYears(orbitalPeriod: 164.79132);
 
     double EarthYears(double orbitalPeriod = 1) => Math.Round(
         this.Seconds / SecondsPerEarthYear(orbitalPeriod),

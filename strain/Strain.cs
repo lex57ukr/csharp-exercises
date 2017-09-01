@@ -21,5 +21,8 @@ public static class Strain
     public static IEnumerable<T> Discard<T>(
         this IEnumerable<T> collection,
         Func<T, bool> predicate
-    ) => collection.Keep(x => ! predicate(x));
+    ) => collection.Keep(predicate.Not());
+
+    static Func<T, bool> Not<T>(this Func<T, bool> predicate)
+        => (x => ! predicate(x));
 }

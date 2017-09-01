@@ -10,8 +10,5 @@ public static class Pangram
     public static bool IsPangram(string input) => input
         .ToLowerInvariant()
         .Distinct()
-        .Count(IsLetter) == AlphabetSize;
-
-    static bool IsLetter(this char c)
-        => c >= 'a' && c <= 'z';
+        .Count(char.IsLetter) == AlphabetSize;
 }

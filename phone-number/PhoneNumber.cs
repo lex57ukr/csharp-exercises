@@ -79,7 +79,7 @@ public class PhoneNumber
     }
 
     static bool IsNanpCode(string part)
-        => part[0] >= '2' && part[0] <= '9';
+        => part[0] >= '2';
 
     static (string area, string exchange, string subscriber) Parts(
         string phoneNumber

@@ -29,6 +29,7 @@ public class PhoneNumber
     static IEnumerable<char> EnumDigitsOrThrow(string text) => text
         .Select(FilterDigitOrThrow)
         .Where(x => x.keep)
+        .Take(LenNanpLong + 1)
         .Select(x => x.value);
 
     static (char value, bool keep) FilterDigitOrThrow(char c)

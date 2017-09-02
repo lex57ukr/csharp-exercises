@@ -27,7 +27,8 @@ public static class ScrabbleScore
     ) => packedScores.Aggregate(
         ImmutableDictionary<char, int>.Empty,
         (acc, kvp) => kvp.Value.Aggregate(
-            acc, (a, c) => a.Add(c, kvp.Key)
+            acc,
+            (a, c) => a.Add(c, kvp.Key)
         )
     );
 }

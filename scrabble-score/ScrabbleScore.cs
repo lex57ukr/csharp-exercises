@@ -22,7 +22,7 @@ public static class ScrabbleScore
         .Select(c => Scores[c])
         .Sum();
 
-    private static IDictionary<char, int> UnpackScores(
+    static IDictionary<char, int> UnpackScores(
         this IDictionary<int, string> packedScores
     ) => packedScores.Aggregate(
         ImmutableDictionary<char, int>.Empty,

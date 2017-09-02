@@ -6,15 +6,16 @@ using System.Collections.Immutable;
 
 public static class ScrabbleScore
 {
-    static readonly IDictionary<char, int> Scores = new Dictionary<int, string> {
-        [1]  = "AEIOULNRST",
-        [2]  = "DG",
-        [3]  = "BCMP",
-        [4]  = "FHVWY",
-        [5]  = "K",
-        [8]  = "JX",
-        [10] = "QZ",
-    }.UnpackScores();
+    static readonly IDictionary<char, int> Scores =
+        new Dictionary<int, string> {
+            [1]  = "AEIOULNRST",
+            [2]  = "DG",
+            [3]  = "BCMP",
+            [4]  = "FHVWY",
+            [5]  = "K",
+            [8]  = "JX",
+            [10] = "QZ",
+        }.UnpackScores();
 
     public static int Score(string input) => input
         .Select(char.ToUpperInvariant)

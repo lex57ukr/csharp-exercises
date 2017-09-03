@@ -10,7 +10,7 @@ public static class ProteinTranslation
     const int CodonGroupLength = 3;
 
     static readonly IDictionary<string, string> Proteins
-        = new Dictionary<string, string[]>
+        = new Dictionary<string, IEnumerable<string>>
         {
             ["Cysteine"]      = new [] {"UGU", "UGC"},
             ["Leucine"]       = new [] {"UUA", "UUG"},
@@ -20,7 +20,7 @@ public static class ProteinTranslation
             ["Tryptophan"]    = new [] {"UGG"},
             ["Tyrosine"]      = new [] {"UAU", "UAC"},
             [Stop]            = new [] {"UAA", "UAG", "UGA"},
-        }.Unpack<string, string, string[]>();
+        }.Unpack();
 
     public static string[] Translate(string codon)
     {
@@ -61,16 +61,13 @@ static class EnumerableExtensions
 
 static class DictionaryExtensions
 {
-    public static IDictionary<TKey, TValue> Unpack<TKey, TValue, TKeys>(
-        this IDictionary<TValue, TKeys> source
-    ) where TKeys: IEnumerable<TKey>
-    {
-        return source.Aggregate(
-            ImmutableDictionary<TKey, TValue>.Empty,
-            (acc, kvp) => kvp.Value.Aggregate(
-                acc,
-                (a, c) => a.Add(c, kvp.Key)
-            )
-        );
-    }
+    public static IDictionary<TKey, TValue> Unpack<TKey, TValue>(
+        this IDictionary<TValue, IEnumerable<TKey>> source
+    ) => source.Aggregate(
+        ImmutableDictionary<TKey, TValue>.Empty,
+        (acc, kvp) => kvp.Value.Aggregate(
+            acc,
+            (a, c) => a.Add(c, kvp.Key)
+        )
+    );
 }

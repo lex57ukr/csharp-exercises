@@ -27,12 +27,14 @@ public static class PerfectNumbers
     static int AliquotSum(this int number)
         => number.Factors().Sum();
 
-    static IEnumerable<int> Factors(this int number) => Enumerable
-        .Range(1, count: number - 1)
-        .Where(n => number % n == 0);
+    static IEnumerable<int> Factors(this int number)
+        => Enumerable
+            .Range(1, count: number - 1)
+            .Where(n => number % n == 0);
 
-    static Classification ClassOf(this int aliquotSum, int number) => Classes
-        .Where(c => c.matcher(aliquotSum, number))
-        .Select(c => c.kind)
-        .First();
+    static Classification ClassOf(this int aliquotSum, int number)
+        => Classes
+            .Where(c => c.matcher(aliquotSum, number))
+            .Select(c => c.kind)
+            .First();
 }

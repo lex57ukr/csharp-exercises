@@ -9,9 +9,9 @@ public static class BeerSong
         => Verses(number, number);
 
     public static string Verses(int begin, int end)
-        => string.Join("\n", AllLyrics(begin, end)) + "";
+        => string.Join("\n", Lyrics(begin, end)) + "";
 
-    static IEnumerable<string> AllLyrics(int begin, int end)
+    static IEnumerable<string> Lyrics(int begin, int end)
         => Enumerable
             .Range(0, count: begin - end + 1)
             .Select(i => begin - i)
@@ -38,13 +38,12 @@ public static class BeerSong
                         now:  "2 bottles",
                         left: "1 bottle"
                     );
-
-                default:
-                    return VerseN(
-                        now:  $"{number} bottles",
-                        left: $"{number - 1} bottles"
-                    );
             }
+
+            return VerseN(
+                now:  $"{number} bottles",
+                left: $"{number - 1} bottles"
+            );
         }
 
         static string Verse0()

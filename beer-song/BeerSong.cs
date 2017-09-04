@@ -15,47 +15,44 @@ public static class BeerSong
         => Enumerable
             .Range(0, count: begin - end + 1)
             .Select(i => begin - i)
-            .Select(Lyrics);
+            .Select(LyricsFactory.New);
 
-    static string Lyrics(int number)
+    static class LyricsFactory
     {
-        switch (number)
+        public static string New(int number)
         {
-            case 0:
-                return Verse0();
+            switch (number)
+            {
+                case 0:
+                    return Verse0();
 
-            case 1:
-                return Verse1();
+                case 1:
+                    return VerseN(
+                        now:     "1 bottle",
+                        left:    "no more bottles",
+                        subject: "it"
+                    );
 
-            case 2:
-                return Verse2();
+                case 2:
+                    return VerseN(
+                        now:  "2 bottles",
+                        left: "1 bottle"
+                    );
 
-            default:
-                return VerseN(number);
+                default:
+                    return VerseN(
+                        now:  $"{number} bottles",
+                        left: $"{number - 1} bottles"
+                    );
+            }
         }
-    }
 
-    static string Verse0()
-    {
-        return "No more bottles of beer on the wall, no more bottles of beer.\n"
+        static string Verse0()
+            => "No more bottles of beer on the wall, no more bottles of beer.\n"
             + "Go to the store and buy some more, 99 bottles of beer on the wall.\n";
-    }
 
-    static string Verse1()
-    {
-        return "1 bottle of beer on the wall, 1 bottle of beer.\n"
-            + "Take it down and pass it around, no more bottles of beer on the wall.\n";
-    }
-
-    static string Verse2()
-    {
-        return "2 bottles of beer on the wall, 2 bottles of beer.\n"
-            + "Take one down and pass it around, 1 bottle of beer on the wall.\n";
-    }
-
-    static string VerseN(int n)
-    {
-        return $"{n} bottles of beer on the wall, {n} bottles of beer.\n"
-            + $"Take one down and pass it around, {n - 1} bottles of beer on the wall.\n";
+        static string VerseN(string now, string left, string subject = "one")
+            => $"{now} of beer on the wall, {now} of beer.\n"
+            + $"Take {subject} down and pass it around, {left} of beer on the wall.\n";
     }
 }

@@ -79,11 +79,11 @@ public static class Triangle
             .Range(0, sides.Length)
             .ToImmutableHashSet();
 
-        (int x, IEnumerable<int> other) ToCheck(int sideIndex)
-            => (x: sideIndex, other: indexes.Remove(sideIndex));
+        (int side, IEnumerable<int> other) IndexToCheck(int i)
+            => (side: i, other: indexes.Remove(i));
 
         return indexes
-            .Select(ToCheck)
+            .Select(IndexToCheck)
             .Select(i => sides.CalcLengths(i))
             .Select(IsNotDegenerate)
             .All(valid => valid);
@@ -96,9 +96,9 @@ public static class Triangle
 
     static (decimal length, decimal sumOfLengths) CalcLengths(
         this TriangleSides sides,
-        (int x, IEnumerable<int> other) index
+        (int side, IEnumerable<int> other) index
     ) => (
-        length:       sides[index.x],
+        length:       sides[index.side],
         sumOfLengths: sides.Lengths(index.other).Sum()
     );
 

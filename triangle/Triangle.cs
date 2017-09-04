@@ -15,7 +15,9 @@ public enum TriangleKind
 
 public static class Triangle
 {
-    static readonly (Func<int, bool> matcher, TriangleKind kind)[] Classes = {
+    static readonly (
+        Func<int, bool> matcher, TriangleKind kind
+    )[] Classes = {
         (IsEquilateral, TriangleKind.Equilateral),
         (IsIsosceles, TriangleKind.Isosceles),
         (IsScalene, TriangleKind.Scalene)
@@ -27,16 +29,21 @@ public static class Triangle
         HasBasicInequality,
     };
 
-    public static TriangleKind Kind(decimal side1, decimal side2, decimal side3)
-        => ComposeSides(side1, side2, side3)
-            .ThrowIfNotTriangle()
-            .CountDistinctSides()
-            .Classify();
+    public static TriangleKind Kind(
+        decimal side1,
+        decimal side2,
+        decimal side3
+    ) => ComposeSides(side1, side2, side3)
+        .ThrowIfNotTriangle()
+        .CountDistinctSides()
+        .Classify();
 
     static TriangleSides ComposeSides(params decimal[] side)
         => side.ToImmutableArray();
 
-    static TriangleSides ThrowIfNotTriangle(this TriangleSides sides)
+    static TriangleSides ThrowIfNotTriangle(
+        this TriangleSides sides
+    )
     {
         if ( ! sides.AreForValidTriangle())
         {
@@ -59,15 +66,6 @@ public static class Triangle
             .Where(c => c.matcher(distinctSides))
             .Select(c => c.kind)
             .First();
-
-    static bool IsEquilateral(int distinctSides)
-        => distinctSides == 1;
-
-    static bool IsIsosceles(int distinctSides)
-        => distinctSides == 2;
-
-    static bool IsScalene(int distinctSides)
-        => distinctSides == 3;
 
     static bool HasThreeSides(TriangleSides sides)
         => sides.Length == 3;
@@ -107,6 +105,15 @@ public static class Triangle
     static bool IsNotDegenerate(
         (decimal length, decimal sumOfLengths) check
     ) => check.length < check.sumOfLengths;
+
+    static bool IsEquilateral(int distinctSides)
+        => distinctSides == 1;
+
+    static bool IsIsosceles(int distinctSides)
+        => distinctSides == 2;
+
+    static bool IsScalene(int distinctSides)
+        => distinctSides == 3;
 }
 
 

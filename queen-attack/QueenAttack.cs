@@ -21,16 +21,16 @@ public static class Queens
     {
         (int x, int y) = ProjectAxis(white, black);
 
-        bool IsSameLocation() => x == 0 && y == 0;
         bool IsDiagonal() => x == y;
-        bool IsSameAxis() => x == 0 || y == 0;
+        bool IsSameRow() => x == 0;
+        bool IsSameColumn() => y == 0;
 
-        if (IsSameLocation())
+        if (IsSameRow() && IsSameColumn())
         {
             throw new ArgumentException();
         }
 
-        return IsDiagonal() || IsSameAxis();
+        return IsDiagonal() || IsSameRow() || IsSameColumn();
     }
 
     static (int x, int y) ProjectAxis(Queen a, Queen b) => (

@@ -12,30 +12,13 @@ public static class Sieve
             throw new ArgumentOutOfRangeException();
         }
 
-        return EnumPrimes(limit).ToArray();
+        return Enumerable
+            .Range(2, count: limit - 1)
+            .Where(IsPrime)
+            .ToArray();
     }
 
-    static IEnumerable<int> EnumPrimes(int limit)
-    {
-        var candidates = Enumerable
-                .Repeat(element: true, count: limit + 1)
-                .ToArray();
-
-        void MarkMultiplesOf(int prime)
-        {
-            for (int i = prime * 2; i < candidates.Length; i += prime)
-            {
-                candidates[i] = false;
-            }
-        }
-
-        for (int i = 2; i < candidates.Length; ++i)
-        {
-            if (candidates[i])
-            {
-                MarkMultiplesOf(i);
-                yield return i;
-            }
-        }
-    }
+    static bool IsPrime(int number) => Enumerable
+        .Range(2, count: (int) Math.Sqrt(number) - 1)
+        .All(x => number % x != 0);
 }

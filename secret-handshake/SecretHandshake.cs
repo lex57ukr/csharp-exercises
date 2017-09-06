@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
+
 public static class SecretHandshake
 {
     const string Reverse = ":reverse";

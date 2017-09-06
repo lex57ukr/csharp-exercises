@@ -87,7 +87,7 @@ public class RobotSimulator
 
     public void TurnLeft()
     {
-        for(var i = _bearings.Count - 1; i > 0; --i)
+        for (var i = _bearings.Count - 1; i > 0; --i)
         {
             TurnRight();
         }

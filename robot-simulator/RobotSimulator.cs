@@ -46,10 +46,6 @@ public class RobotSimulator
             [Bearing.West]  = new Coordinate(x: -1, y: 0),
         }.ToImmutableDictionary();
 
-    readonly Queue<Bearing> _bearings = new Queue<Bearing>(
-        Enum.GetValues(typeof(Bearing)).Cast<Bearing>()
-    );
-
     readonly IDictionary<char, Action> _simInstrHandlers;
 
     public RobotSimulator(Bearing bearing, Coordinate coordinate)
@@ -66,14 +62,8 @@ public class RobotSimulator
 
     public Bearing Bearing
     {
-        get => _bearings.Peek();
-        private set
-        {
-            while (value != this.Bearing)
-            {
-                TurnRight();
-            }
-        }
+        get;
+        private set;
     }
 
     public Coordinate Coordinate
@@ -83,15 +73,10 @@ public class RobotSimulator
     }
 
     public void TurnRight()
-        => _bearings.Enqueue(_bearings.Dequeue());
+        => this.Bearing = NewBearing(delta: 1);
 
     public void TurnLeft()
-    {
-        for (var i = _bearings.Count - 1; i > 0; --i)
-        {
-            TurnRight();
-        }
-    }
+        => this.Bearing = NewBearing(delta: 3);
 
     public void Advance()
         => this.Coordinate += Deltas[this.Bearing];
@@ -103,4 +88,7 @@ public class RobotSimulator
             _simInstrHandlers[code]();
         }
     }
+
+    Bearing NewBearing(int delta) 
+        => (Bearing) (((int) this.Bearing + delta) % Deltas.Count);
 }

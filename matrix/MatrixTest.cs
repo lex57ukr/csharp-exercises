@@ -46,6 +46,7 @@ public class MatrixTest
     }
 
     [Theory]
+    [InlineData("", 0)]
     [InlineData("28", 1)]
     [InlineData("13\n16", 2)]
     [InlineData("289 21903\n23 218\n23 21", 3)]
@@ -57,6 +58,7 @@ public class MatrixTest
     }
 
     [Theory]
+    [InlineData("", 0)]
     [InlineData("28", 1)]
     [InlineData("13 2\n16 3\n19 4", 2)]
     [InlineData("289 21903\n23 218\n23 21", 2)]

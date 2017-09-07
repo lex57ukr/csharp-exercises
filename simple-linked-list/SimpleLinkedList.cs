@@ -13,20 +13,17 @@ public class SimpleLinkedList<T>
     public SimpleLinkedList(IEnumerable<T> values)
         : this(values.First())
     {
-        foreach (var value in values.Skip(1))
-        {
-            Add(value);
-        }
+        AddMany(values.Skip(1));
     }
 
-    public T Value 
-    { 
+    public T Value
+    {
         get;
         private set;
     }
 
     public SimpleLinkedList<T> Next
-    { 
+    {
         get;
         private set;
     }
@@ -40,6 +37,19 @@ public class SimpleLinkedList<T>
         else
         {
             this.Next.Add(value);
+        }
+
+        return this;
+    }
+
+    public SimpleLinkedList<T> AddMany(IEnumerable<T> values)
+    {
+        foreach (var value in values.Reverse())
+        {
+            this.Next = new SimpleLinkedList<T>(value)
+            {
+                Next = this.Next
+            };
         }
 
         return this;

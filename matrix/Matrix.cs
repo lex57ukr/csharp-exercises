@@ -10,8 +10,7 @@ public class Matrix
 
     public Matrix(string input)
         => _data = input
-        .Split('\n')
-        .Where(s => ! string.IsNullOrWhiteSpace(s))
+        .Split(new [] {'\n'}, StringSplitOptions.RemoveEmptyEntries)
         .Aggregate(
             ImmutableList<int[]>.Empty,
             ParseLine

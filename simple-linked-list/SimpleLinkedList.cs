@@ -30,28 +30,13 @@ public class SimpleLinkedList<T>
 
     public SimpleLinkedList<T> Add(T value)
     {
-        if (this.Next == null)
-        {
-            this.Next = new SimpleLinkedList<T>(value);
-        }
-        else
-        {
-            this.Next.Add(value);
-        }
-
+        this.Tail().Next = new SimpleLinkedList<T>(value);
         return this;
     }
 
     public SimpleLinkedList<T> AddMany(IEnumerable<T> values)
     {
-        foreach (var value in values.Reverse())
-        {
-            this.Next = new SimpleLinkedList<T>(value)
-            {
-                Next = this.Next
-            };
-        }
-
+        this.Tail().Next = Link(values);
         return this;
     }
 
@@ -65,4 +50,15 @@ public class SimpleLinkedList<T>
 
     IEnumerator IEnumerable.GetEnumerator()
         => GetEnumerator();
+
+    SimpleLinkedList<T> Tail()
+        => this.Next == null ? this : this.Next.Tail();
+
+    static SimpleLinkedList<T> Link(IEnumerable<T> values)
+        => values
+        .Reverse()
+        .Aggregate(
+            default(SimpleLinkedList<T>),
+            (head, v) => new SimpleLinkedList<T>(v) {Next = head}
+        );
 }

@@ -80,4 +80,15 @@ public class SimpleLinkedListTest
         var listValues = new SimpleLinkedList<int>(values);
         Assert.Equal(values, listValues);
     }
+
+    [Fact]
+    public void MaintainsSequenceOrder()
+    {
+        var values = Enumerable.Range(1, 6);
+        var list   = new SimpleLinkedList<int>(new [] {1, 2, 3})
+            .Add(4)
+            .AddMany(new [] {5, 6});
+
+        Assert.Equal(values, list);
+    }
 }

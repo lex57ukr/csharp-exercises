@@ -18,7 +18,6 @@ public static class LargestSeriesProduct
                 .Slices(span)
                 .Select(Integers)
                 .Select(Product)
-                .DefaultIfEmpty(1)
                 .Max();
         }
         catch (FormatException e)

@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 
 
 public static class LargestSeriesProduct
@@ -16,7 +15,8 @@ public static class LargestSeriesProduct
         try
         {
             return digits
-                .SliceMap(span, ToIntegers)
+                .Slices(span)
+                .Select(Integers)
                 .Select(Product)
                 .DefaultIfEmpty(1)
                 .Max();
@@ -27,27 +27,14 @@ public static class LargestSeriesProduct
         }
     }
 
-    static IEnumerable<int> ToIntegers(IEnumerable<char> source)
+    static IEnumerable<string> Slices(this string source, int span)
+        => Enumerable
+        .Range(0, count: source.Length + 1 - span)
+        .Select(i => source.Substring(i, span));
+
+    static IEnumerable<int> Integers(IEnumerable<char> source)
         => source.Select(char.ToString).Select(int.Parse);
 
     static long Product(IEnumerable<int> source)
         => source.Aggregate((long) 1, (acc, n) => acc * n);
 }
-
-
-static class EnumerableExtensions
-{
-    public static IEnumerable<TResult> SliceMap<TItem, TResult>(
-        this IEnumerable<TItem> source,
-        int size,
-        Func<IEnumerable<TItem>, TResult> map
-    ) => Enumerable
-        .Range(0, count: source.Count() + 1 - size)
-        .Aggregate(
-            ImmutableList<TResult>.Empty,
-            (acc, i) => acc.Add(
-                map(source.Skip(i).Take(size))
-            )
-        );
-}
-

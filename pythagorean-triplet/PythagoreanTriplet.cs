@@ -5,25 +5,19 @@ using System.Collections.Generic;
 
 public class Triplet
 {
-    int A { get; }
-    int B { get; }
-    int C { get; }
+    readonly int[] _sides;
 
     public Triplet(int a, int b, int c)
-    {
-        this.A = a;
-        this.B = b;
-        this.C = c;
-    }
+        => _sides = new [] {a, b, c};
 
     public int Sum()
-        => this.A + this.B + this.C;
+        => _sides.Sum();
 
     public int Product()
-        => this.A * this.B * this.C;
+        => _sides.Aggregate(1, (acc, x) => acc * x);
 
     public bool IsPythagorean()
-        => Pow2(this.A) + Pow2(this.B) == Pow2(this.C);
+        => _sides.Take(2).Select(Pow2).Sum() == Pow2(_sides[2]);
 
     public static IEnumerable<Triplet> Where(
         int maxFactor,

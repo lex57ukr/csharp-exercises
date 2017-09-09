@@ -18,14 +18,14 @@ public static class House
         The("cat").That("killed"),
         The("rat").That("ate"),
         The("malt").That("lay").In(),
-        The("house that Jack built.").Stop(),
+        The("house that Jack built").Stop(),
     };
 
     static int VersesCount => Statements.Length;
 
     public static string Verse(int number)
         => number.StatementIndices().Aggregate(
-            new StringBuilder("This is the "),
+            new StringBuilder("This is"),
             ContinueVerse
         ).ToString();
 
@@ -37,13 +37,8 @@ public static class House
 
     static StringBuilder ContinueVerse(StringBuilder buff, int i)
     {
-        (string subject, string next) = Statements[i];
-
-        buff.Append(subject);
-        if (next != null)
-        {
-            buff.Append($"\nthat {next} the ");
-        }
+        buff.Append(Statements[i].Item1);
+        buff.Append(Statements[i].Item2);
 
         return buff;
     }
@@ -61,10 +56,10 @@ public static class House
         => VersesCount - verseNumber.ToStatementIndex();
 
     static string The(string subject)
-        => subject;
+        => $" the {subject}";
 
     static (string, string) That(this string subject, string verb)
-        => (subject, verb);
+        => (subject, $"\nthat {verb}");
 
     static (string, string) To(this (string, string) x)
         => x.Add("to");
@@ -73,7 +68,7 @@ public static class House
         => x.Add("in");
 
     static (string, string) Stop(this string subject)
-        => (subject, null);
+        => ($"{subject}.", string.Empty);
 
     static (string, string) Add(
         this (string subject, string verb) x,

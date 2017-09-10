@@ -15,38 +15,32 @@ public class Series
         .ToImmutableArray();
 
     public int[][] Slices(int sliceLength)
-        => _digits
-        .CheckSlice(sliceLength)
-        .SliceMap(sliceLength, x => x.ToArray())
-        .ToArray();
-}
-
-
-static class EnumerableExtensions
-{
-    public static IEnumerable<TResult> SliceMap<TItem, TResult>(
-        this IEnumerable<TItem> source,
-        int size,
-        Func<IEnumerable<TItem>, TResult> map
-    ) => Enumerable
-        .Range(0, count: source.Count() + 1 - size)
+        => ThrowIfSlicingImpossible(sliceLength)
+        .IndexSlices(sliceLength)
         .Aggregate(
-            ImmutableList<TResult>.Empty,
-            (acc, i) => acc.Add(
-                map(source.Skip(i).Take(size))
-            )
-        );
+            ImmutableList<int[]>.Empty,
+            (acc, i) => acc.Add(SliceAt(i, sliceLength))
+        ).ToArray();
 
-    public static IEnumerable<TItem> CheckSlice<TItem>(
-        this IEnumerable<TItem> source,
-        int size
-    )
+    Series ThrowIfSlicingImpossible(int size)
     {
-        if (size > source.Count())
+        if (size > _digits.Length)
         {
-            throw new ArgumentException("The slice exceeds the source.");
+            throw new ArgumentException();
         }
 
-        return source;
+        return this;
+    }
+
+    IEnumerable<int> IndexSlices(int size)
+        => Enumerable
+        .Range(0, count: _digits.Length + 1 - size);
+
+    int[] SliceAt(int i, int size)
+    {
+        var dest = new int [size];
+        _digits.CopyTo(i, dest, 0, size);
+
+        return dest;
     }
 }

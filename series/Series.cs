@@ -15,7 +15,8 @@ public class Series
         .ToImmutableArray();
 
     public int[][] Slices(int sliceLength)
-        => _digits.CheckSlice(sliceLength)
+        => _digits
+        .CheckSlice(sliceLength)
         .SliceMap(sliceLength, x => x)
         .ToArray();
 }

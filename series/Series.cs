@@ -15,31 +15,46 @@ public class Series
         .ToImmutableArray();
 
     public int[][] Slices(int sliceLength)
-        => ThrowIfSlicingImpossible(sliceLength)
-        .IndexSlices(sliceLength)
-        .Aggregate(
-            ImmutableList<int[]>.Empty,
-            (acc, i) => acc.Add(SliceAt(i, sliceLength))
-        ).ToArray();
+        => _digits.CheckSlice(sliceLength)
+        .SliceMap(sliceLength, x => x)
+        .ToArray();
+}
 
-    Series ThrowIfSlicingImpossible(int size)
+
+static class ImmutableArrayExtensions
+{
+    public static ImmutableArray<TItem> CheckSlice<TItem>(
+        this ImmutableArray<TItem> source,
+        int size
+    )
     {
-        if (size > _digits.Length)
+        if (size > source.Length)
         {
-            throw new ArgumentException();
+            throw new ArgumentException("The slice exceeds the source.");
         }
 
-        return this;
+        return source;
     }
 
-    IEnumerable<int> IndexSlices(int size)
-        => Enumerable
-        .Range(0, count: _digits.Length + 1 - size);
+    public static IEnumerable<TResult> SliceMap<TItem, TResult>(
+        this ImmutableArray<TItem> source,
+        int size,
+        Func<TItem[], TResult> map
+    ) => Enumerable
+        .Range(0, count: source.Length + 1 - size)
+        .Aggregate(
+            ImmutableList<TResult>.Empty,
+            (acc, i) => acc.Add(
+                map(source.SliceAt(i, size))
+            )
+        );
 
-    int[] SliceAt(int i, int size)
+    static TItem[] SliceAt<TItem>(
+        this ImmutableArray<TItem> source, int i, int size
+    )
     {
-        var dest = new int [size];
-        _digits.CopyTo(i, dest, 0, size);
+        var dest = new TItem [size];
+        source.CopyTo(i, dest, 0, size);
 
         return dest;
     }

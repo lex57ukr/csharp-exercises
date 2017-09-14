@@ -5,6 +5,13 @@
     "options": {
         "cwd": "${fileDirname}"
     },
+    "windows": {
+        "options": {
+            "shell": {
+                "executable": "powershell.exe"
+            }
+        }
+    },
     "tasks": [
         {
             "taskName": "build",

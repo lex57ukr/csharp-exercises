@@ -22,6 +22,7 @@ public class Meetup
 
     static readonly Calendar Calendar
         = new GregorianCalendar(GregorianCalendarTypes.USEnglish);
+
     static readonly IDictionary<Schedule, DateTimeSelector> Schedulers
         = new Dictionary<Schedule, DateTimeSelector>
         {

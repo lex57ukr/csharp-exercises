@@ -85,11 +85,8 @@ public static class AllYourBase
         => @base > 1;
 
     private static bool HasLeadingZero(int[] digits)
-        => digits.TakeWhile(x => x == 0).IsNotEmpty();
+        => digits.TakeWhile(x => x == 0).Count() != 0;
 
     private static bool HasInvalidDigit(int @base, int[] digits)
-        => digits.Where(x => x >= @base || x < 0).IsNotEmpty();
-
-    private static bool IsNotEmpty(this IEnumerable<int> digits)
-        => digits.Select(_ => true).FirstOrDefault();
+        => digits.Any(x => @base <= x || x < 0);
 }

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using static System.Math;
+using static System.Linq.Enumerable;
 
 
 public static class AllYourBase
@@ -11,25 +12,28 @@ public static class AllYourBase
         ThrowIfInvalid(inputBase, inputDigits, outputBase);
 
         var number = Compose(inputDigits, inputBase);
-        return ToBase(number, outputBase);
+        return Convert(number, outputBase);
     }
 
     private static int Compose(int[] digits, int @base)
     {
         int Weigh(int digit, int index)
-            => digit * (int) Pow(@base, index);
+            => digit * Pow(@base, index);
 
         return digits.Reverse().Select(Weigh).Sum();
     }
 
-    private static int[] ToBase(int number, int @base)
+    private static int[] Convert(int number, int @base)
     {
-        int Weigh(int index)
-            => (number / (int) Pow(@base, index)) % @base;
+        int Digit(int index)
+            => (number / Pow(@base, index)) % @base;
 
         var length = Length(number, @base);
-        return Enumerable.Range(0, length).Select(Weigh).Reverse().ToArray();
+        return Range(0, length).Select(Digit).Reverse().ToArray();
     }
+
+    private static int Pow(int x, int y)
+        => (int) Math.Pow(x, y);
 
     private static int Length(int number, int @base)
         => (int) (Log(number) / Log(@base)) + 1;

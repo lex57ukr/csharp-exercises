@@ -19,6 +19,6 @@ public static class PascalsTriangle
             (acc, i) => acc.Add(Next(acc.Last(), i, n))
         );
 
-    private static int Next(int prev, int i, int row)
-        => prev * (row - i) / (i + 1);
+    private static int Next(int prev, int i, int n)
+        => prev * (n - i) / (i + 1);
 }

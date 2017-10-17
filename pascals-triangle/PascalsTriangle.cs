@@ -10,7 +10,7 @@ public static class PascalsTriangle
     public static IEnumerable<IEnumerable<int>> Calculate(int rows)
         => Range(0, rows).Aggregate(
             ImmutableList<IEnumerable<int>>.Empty,
-            (acc, i) => acc.Add(Row(i))
+            (acc, n) => acc.Add(Row(n))
         );
 
     private static IEnumerable<int> Row(int n)
@@ -19,6 +19,6 @@ public static class PascalsTriangle
             (acc, i) => acc.Add(Next(acc.Last(), i, n))
         );
 
-    private static int Next(int prev, int i, int n)
-        => prev * (n - i) / (i + 1);
+    private static int Next(int prev, int i, int row)
+        => prev * (row - i) / (i + 1);
 }

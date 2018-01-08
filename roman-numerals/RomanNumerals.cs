@@ -35,6 +35,6 @@ public static class RomanNumeralExtension
             acc.Append(num.Roman);
         }
 
-        return string.Concat(acc);
+        return acc.ToString();
     }
 }

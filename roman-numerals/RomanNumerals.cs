@@ -29,12 +29,12 @@ public static class RomanNumeralExtension
             .Reverse()
             .Select(Pow10)
             .Aggregate(
-                (parts: ImmutableList<int>.Empty, value: value),
+                (Parts: ImmutableList<int>.Empty, Value: value),
                 (acc, p) => (
-                    AddNonZeroPart(acc.parts, GetPart(acc.value, p)),
+                    acc.Parts.AddNonZero(Part(acc.Value, p)),
                     value % p
                 )
-            ).parts;
+            ).Parts;
 
     private static int CountDecimalPlaces(int n)
         => (int) Log10(n) + 1;
@@ -42,13 +42,13 @@ public static class RomanNumeralExtension
     private static int Pow10(int n)
         => (int) Pow(10, n);
 
-    private static int GetPart(int value, int pow)
+    private static int Part(int value, int pow)
         => (value / pow) * pow;
 
-    private static ImmutableList<int> AddNonZeroPart(
-        ImmutableList<int> acc,
-        int part
-    ) => 0 != part ? acc.Add(part) : acc;
+    private static ImmutableList<int> AddNonZero(
+        this ImmutableList<int> acc,
+        int value
+    ) => 0 != value ? acc.Add(value) : acc;
 
     private static string AsNumeral(int n)
     {

@@ -27,7 +27,7 @@ public static class RomanNumeralExtension
         var rem = value;
         var acc = new StringBuilder();
 
-        while (rem != 0)
+        while (rem > 0)
         {
             var num = Numerals.First(x => x.Arabic <= rem);
 

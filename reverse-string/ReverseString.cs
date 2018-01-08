@@ -6,7 +6,7 @@ public static class ReverseString
     public static string Reverse(string input)
     {
         var chars = input.ToCharArray();
-        for (var i = 0; i < chars.Length / 2; ++i)
+        for (int i = 0, count = chars.Length / 2; i < count; ++i)
         {
             Swap(chars, i, chars.Length - i - 1);
         }

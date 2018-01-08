@@ -1,57 +1,40 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using static System.Math;
-using static System.Linq.Enumerable;
+using System.Text;
+using System.Linq;
 
 
 public static class RomanNumeralExtension
 {
-    private static readonly ImmutableArray<(int Arabic, string Roman)>
+    private static readonly (int Arabic, string Roman)[]
         Numerals = new [] {
-            (1,    "I"),
-            (5,    "V"),
-            (10,   "X"),
-            (50,   "L"),
-            (100,  "C"),
-            (500,  "D"),
             (1000, "M"),
-        }.ToImmutableArray();
+            (900,  "CM"),
+            (500,  "D"),
+            (400,  "CD"),
+            (100,  "C"),
+            (90,   "XC"),
+            (50,   "L"),
+            (40,   "XL"),
+            (10,   "X"),
+            (9,    "IX"),
+            (5,    "V"),
+            (4,    "IV"),
+            (1,    "I"),
+        };
 
     public static string ToRoman(this int value)
     {
-        var numerals = value.ToDecimalParts().Select(AsNumeral);
-        return string.Join(",", numerals);
-    }
+        var rem = value;
+        var acc = new StringBuilder();
 
-    private static IEnumerable<int> ToDecimalParts(this int value)
-        => Range(0, CountDecimalPlaces(value))
-            .Reverse()
-            .Select(Pow10)
-            .Aggregate(
-                (Parts: ImmutableList<int>.Empty, Value: value),
-                (acc, p) => (
-                    acc.Parts.AddNonZero(Part(acc.Value, p)),
-                    value % p
-                )
-            ).Parts;
+        while (rem != 0)
+        {
+            var n = Numerals.First(x => x.Arabic <= rem);
 
-    private static int CountDecimalPlaces(int n)
-        => (int) Log10(n) + 1;
+            rem -= n.Arabic;
+            acc.Append(n.Roman);
+        }
 
-    private static int Pow10(int n)
-        => (int) Pow(10, n);
-
-    private static int Part(int value, int pow)
-        => (value / pow) * pow;
-
-    private static ImmutableList<int> AddNonZero(
-        this ImmutableList<int> acc,
-        int value
-    ) => 0 != value ? acc.Add(value) : acc;
-
-    private static string AsNumeral(int n)
-    {
-        return n.ToString();
+        return string.Concat(acc);
     }
 }

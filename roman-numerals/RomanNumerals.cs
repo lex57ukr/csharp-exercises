@@ -29,10 +29,10 @@ public static class RomanNumeralExtension
 
         while (rem != 0)
         {
-            var n = Numerals.First(x => x.Arabic <= rem);
+            var num = Numerals.First(x => x.Arabic <= rem);
 
-            rem -= n.Arabic;
-            acc.Append(n.Roman);
+            rem -= num.Arabic;
+            acc.Append(num.Roman);
         }
 
         return string.Concat(acc);

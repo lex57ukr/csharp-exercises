@@ -9,7 +9,7 @@ public static class IsbnVerifier
     private const string IsbnPattern = @"^\d(-?)\d{3}\1\d{5}\1[\dX]$";
 
     public static bool IsValid(string number)
-        => IsIsbnPattern(number) && IsbnCheckSum(number) % 11 == 0;
+        => IsIsbnLike(number) && IsbnCheckSum(number) % 11 == 0;
 
     private static int IsbnCheckSum(string number)
         => SequenceDigits(number)
@@ -17,7 +17,7 @@ public static class IsbnVerifier
         .Select((n, i) => n * (i + 1))
         .Sum();
 
-    private static bool IsIsbnPattern(string number)
+    private static bool IsIsbnLike(string number)
         => Regex.IsMatch(number, IsbnPattern);
 
     private static IEnumerable<int> SequenceDigits(string number)

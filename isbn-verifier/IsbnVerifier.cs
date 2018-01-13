@@ -6,7 +6,6 @@ using static System.Linq.Enumerable;
 
 public static class IsbnVerifier
 {
-    private const int ZeroChar = 48;
     private const string IsbnPattern = @"^\d(-?)\d{3}\1\d{5}\1[\dX]$";
 
     public static bool IsValid(string number)
@@ -25,5 +24,5 @@ public static class IsbnVerifier
         => number.Where(x => x != '-').Select(ToInt32);
 
     private static int ToInt32(char c)
-        => c == 'X' ? 10 : Convert.ToInt32(c) - ZeroChar;
+        => c == 'X' ? 10 : c - '0';
 }

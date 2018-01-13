@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using static System.Linq.Enumerable;
 
+
 public static class IsbnVerifier
 {
     private const int ZeroChar = 48;

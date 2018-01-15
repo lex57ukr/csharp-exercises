@@ -18,7 +18,7 @@ public class BinarySearchTree
     {
         get
         {
-            throw new NotImplementedException("You need to implement this function.");
+            throw new NotImplementedException();
         }
     }
 
@@ -26,7 +26,7 @@ public class BinarySearchTree
     {
         get
         {
-            throw new NotImplementedException("You need to implement this function.");
+            throw new NotImplementedException();
         }
     }
 
@@ -34,22 +34,22 @@ public class BinarySearchTree
     {
         get
         {
-            throw new NotImplementedException("You need to implement this function.");
+            throw new NotImplementedException();
         }
     }
 
     public BinarySearchTree Add(int value)
     {
-        throw new NotImplementedException("You need to implement this function.");
+        throw new NotImplementedException();
     }
 
     public IEnumerator<int> GetEnumerator()
     {
-        throw new NotImplementedException("You need to implement this function.");
+        throw new NotImplementedException();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        throw new NotImplementedException("You need to implement this function.");
+        throw new NotImplementedException();
     }
 }

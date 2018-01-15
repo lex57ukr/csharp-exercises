@@ -1,34 +1,28 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 
 
 public static class FlattenArray
 {
     public static IEnumerable Flatten(IEnumerable input)
     {
-        var acc = new ArrayList();
-        Flatten(input, acc);
-
-        return acc;
-    }
-
-    private static void Flatten(object item, ArrayList acc)
-    {
-        if (item == null)
+        foreach (var x in input)
         {
-            return;
-        }
-
-        if (item is IEnumerable collection)
-        {
-            foreach (var x in collection)
+            if (x == null)
             {
-                Flatten(x, acc);
+                continue;
             }
-        }
-        else
-        {
-            acc.Add(item);
+
+            if (x is IEnumerable collection)
+            {
+                foreach (var n in Flatten(collection))
+                {
+                    yield return n;
+                }
+            }
+            else
+            {
+                yield return x;
+            }
         }
     }
 }

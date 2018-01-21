@@ -1,30 +1,21 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using static System.Linq.Enumerable;
 
 
 public class BinarySearchTree
     : IEnumerable<int>
 {
-    public int Value
-    {
-        get;
-    }
+    private readonly int _value;
+    private BinarySearchTree _left, _right;
 
-    public BinarySearchTree Left
-    {
-        get;
-        private set;
-    }
-
-    public BinarySearchTree Right
-    {
-        get;
-        private set;
-    }
+    public int Value => _value;
+    public BinarySearchTree Left => _left;
+    public BinarySearchTree Right => _right;
 
     public BinarySearchTree(int value)
-        => this.Value = value;
+        => _value = value;
 
     public BinarySearchTree(IEnumerable<int> values)
     {
@@ -35,7 +26,7 @@ public class BinarySearchTree
                 throw new ArgumentException("The collection is empty.");
             }
 
-            this.Value = enumerator.Current;
+            _value = enumerator.Current;
             while (enumerator.MoveNext())
             {
                 Add(enumerator.Current);
@@ -47,11 +38,11 @@ public class BinarySearchTree
     {
         if (value <= this.Value)
         {
-            AddLeft(value);
+            _left = Add(value, _left);
         }
         else
         {
-            AddRight(value);
+            _right = Add(value, _right);
         }
 
         return this;
@@ -59,49 +50,28 @@ public class BinarySearchTree
 
     public IEnumerator<int> GetEnumerator()
     {
-        if (this.Left != null)
-        {
-            foreach (var x in this.Left)
-            {
-                yield return x;
-            }
-        }
-
-        yield return this.Value;
-
-        if (this.Right != null)
-        {
-            foreach (var x in this.Right)
-            {
-                yield return x;
-            }
-        }
+        return Enumerate(this.Left)
+            .Concat(Repeat(this.Value, 1))
+            .Concat(Enumerate(this.Right))
+            .GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
         => GetEnumerator();
 
-    private void AddLeft(int value)
+    private static IEnumerable<int> Enumerate(BinarySearchTree tree)
     {
-        if (this.Left == null)
+        if (tree == null)
         {
-            this.Left = new BinarySearchTree(value);
+            yield break;
         }
-        else
+
+        foreach (var x in tree)
         {
-            this.Left.Add(value);
+            yield return x;
         }
     }
 
-    private void AddRight(int value)
-    {
-        if (this.Right == null)
-        {
-            this.Right = new BinarySearchTree(value);
-        }
-        else
-        {
-            this.Right.Add(value);
-        }
-    }
+    private static BinarySearchTree Add(int value, BinarySearchTree tree)
+        => tree?.Add(value) ?? new BinarySearchTree(value);
 }

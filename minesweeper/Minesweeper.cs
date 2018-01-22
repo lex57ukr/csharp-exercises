@@ -47,19 +47,12 @@ public static class Minesweeper
         return Finalize(build.Rows, build.Chars).ToArray();
     }
 
-    private static IEnumerable<(int Row, int Column)> Hits((int Row, int Column) x)
+    private static IEnumerable<(int Row, int Column)> Hits((int Row, int Column) point)
     {
-        return new []
-        {
-            (x.Row - 1, x.Column),
-            (x.Row + 1, x.Column),
-            (x.Row, x.Column - 1),
-            (x.Row, x.Column + 1),
-            (x.Row - 1, x.Column - 1),
-            (x.Row - 1, x.Column + 1),
-            (x.Row + 1, x.Column - 1),
-            (x.Row + 1, x.Column + 1),
-        };
+        return Range(-1, 3).SelectMany(
+            _ => Range(-1, 3),
+            (x, y) => (point.Row + x, point.Column + y)
+        );
     }
 
     private static IEnumerable<(int Row, int Column)> Points(string[] input)
@@ -88,6 +81,6 @@ public static class Minesweeper
 
     private static ImmutableList<string> Finalize(
         ImmutableList<string> rows,
-        ImmutableList<char> chars
+        IEnumerable<char> chars
     ) => rows.Add(string.Concat(chars));
 }

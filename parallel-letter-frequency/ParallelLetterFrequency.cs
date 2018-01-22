@@ -7,6 +7,12 @@ public static class ParallelLetterFrequency
 {
     public static Dictionary<char, int> Calculate(IEnumerable<string> texts)
     {
-        throw new NotImplementedException();
+        return texts
+            .AsParallel()
+            .SelectMany(x => x.AsEnumerable())
+            .Where(char.IsLetter)
+            .Select(char.ToLower)
+            .GroupBy(x => x)
+            .ToDictionary(x => x.Key, x => x.Count());
     }
 }

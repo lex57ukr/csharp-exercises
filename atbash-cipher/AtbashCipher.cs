@@ -5,8 +5,7 @@ using System.Linq;
 public static class AtbashCipher
 {
     private const int GroupSize = 5;
-    private const int AlphabetSize = 26;
-
+ 
     public static string Encode(string plainValue)
     {
         var transcoded = plainValue
@@ -36,11 +35,5 @@ public static class AtbashCipher
     }
 
     private static char Transcode(char c)
-        => char.IsLetter(c) ? Encode(c) : c;
-
-    private static char Encode(char c)
-        => (char) (Encode((int) c - (int) 'a') + (int) 'a');
-
-    private static int Encode(int x)
-        => (AlphabetSize - 1) * (x + 1) % AlphabetSize;
+        => char.IsLetter(c) ? (char) ('z' - c + 'a') : c;
 }

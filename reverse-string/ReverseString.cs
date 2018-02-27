@@ -15,7 +15,7 @@ public static class ReverseString
     {
         for (int i = 0, count = array.Length / 2; i < count; ++i)
         {
-            Swap(array, i, chars.Length - i - 1);
+            Swap(array, i, array.Length - i - 1);
         }
     }
 

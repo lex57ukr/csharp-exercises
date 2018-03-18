@@ -22,11 +22,11 @@ public static class FoodChain
     private static readonly Verse[] Verses = new Verse("fly")
         .I("don't know why she swallowed the fly. Perhaps she'll die").Stop()
         .Swallowed("spider").It("wriggled and jiggled and tickled inside her").Stop()
-        .Swallowed("bird").How("absurd to swallow a bird").Exclaim()
-        .Swallowed("cat").Imagine("that, to swallow a cat").Exclaim()
-        .Swallowed("dog").What("a hog, to swallow a dog").Exclaim()
-        .Swallowed("goat").Just("opened her throat and swallowed a goat").Exclaim()
-        .Swallowed("cow").I("don't know how she swallowed a cow").Exclaim()
+        .Swallowed("bird").How("absurd to swallow").A().Exclaim()
+        .Swallowed("cat").Imagine("that, to swallow").A().Exclaim()
+        .Swallowed("dog").What("a hog, to swallow").A().Exclaim()
+        .Swallowed("goat").Just("opened her throat and swallowed").A().Exclaim()
+        .Swallowed("cow").I("don't know how she swallowed").A().Exclaim()
         .Swallowed("horse").She("'s dead, of course").Exclaim()
         .Done()
         .ToArray();
@@ -38,7 +38,7 @@ public static class FoodChain
         private Verse _next, _prev;
         private string _opinion, _action;
         private char _punctuation;
-        private bool _that;
+        private bool _that, _reference;
 
         public string Subject { get; }
 
@@ -68,6 +68,9 @@ public static class FoodChain
 
         public Verse She(string action)
             => Opinionate(nameof(She), action);
+
+        public Verse A()
+            => Do(() => _reference = true);
 
         public Verse Stop()
             => Do(() => _punctuation = '.');
@@ -143,6 +146,13 @@ public static class FoodChain
         {
             buff.Append("\n");
             buff.Append(_opinion);
+
+            if (_reference)
+            {
+                buff.Append(" a ");
+                buff.Append(this.Subject);
+            }
+
             buff.Append(_punctuation);
         }
 

@@ -13,13 +13,13 @@ public static class FoodChain
         var verses = Range(
             startVerse,
             endVerse - startVerse + 1
-        ).Select(x => Blocks[x - 1]);
+        ).Select(x => Verses[x - 1]);
 
         var text = string.Join("\n\n", verses);
         return text;
     }
 
-    private static readonly Block[] Blocks = new Block("fly")
+    private static readonly Verse[] Verses = new Verse("fly")
         .I("don't know why she swallowed the fly. Perhaps she'll die").Stop()
         .Swallowed("spider").It("wriggled and jiggled and tickled inside her").Stop()
         .Swallowed("bird").How("absurd to swallow a bird").Exclaim()
@@ -32,56 +32,56 @@ public static class FoodChain
         .ToArray();
 
     [DebuggerDisplay("{Subject}")]
-    private class Block
-        : IEnumerable<Block>
+    private class Verse
+        : IEnumerable<Verse>
     {
-        private Block _next, _prev;
+        private Verse _next, _prev;
         private string _opinion, _action;
         private char _punctuation;
         private bool _that;
 
         public string Subject { get; }
 
-        public Block(string subject, Block prev = null)
+        public Verse(string subject, Verse prev = null)
         {
             _prev = prev;
             this.Subject = subject;
         }
 
-        public Block It(string action)
+        public Verse It(string action)
             => Opinionate(nameof(It), action).Do(() => _that = true);
 
-        public Block How(string action)
+        public Verse How(string action)
             => Opinionate(nameof(How), action);
 
-        public Block Imagine(string action)
+        public Verse Imagine(string action)
             => Opinionate(nameof(Imagine), action);
 
-        public Block What(string action)
+        public Verse What(string action)
             => Opinionate(nameof(What), action);
 
-        public Block Just(string action)
+        public Verse Just(string action)
             => Opinionate(nameof(Just), action);
 
-        public Block I(string action)
+        public Verse I(string action)
             => Opinionate(nameof(I), action);
 
-        public Block She(string action)
+        public Verse She(string action)
             => Opinionate(nameof(She), action);
 
-        public Block Stop()
+        public Verse Stop()
             => Do(() => _punctuation = '.');
 
-        public Block Exclaim()
+        public Verse Exclaim()
             => Do(() => _punctuation = '!');
 
-        public Block Swallowed(string subject)
-            => _next = new Block(subject, this);
+        public Verse Swallowed(string subject)
+            => _next = new Verse(subject, this);
 
-        public Block Done()
+        public Verse Done()
             => _prev?.Done() ?? this;
 
-        public IEnumerator<Block> GetEnumerator()
+        public IEnumerator<Verse> GetEnumerator()
         {
             var curr = this;
             do
@@ -146,7 +146,7 @@ public static class FoodChain
             buff.Append(_punctuation);
         }
 
-        private Block Opinionate(string start, string action)
+        private Verse Opinionate(string start, string action)
         {
             _action  = action;
             _opinion = action.StartsWith('\'')
@@ -156,7 +156,7 @@ public static class FoodChain
             return this;
         }
 
-        private Block Do(Action action)
+        private Verse Do(Action action)
         {
             action();
             return this;

@@ -71,7 +71,7 @@ That Shepherd, who first taught the chosen Seed
         Assert.Equal(expected, Grep.Find(pattern, flags, files));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void One_file_one_match_print_line_numbers_flag()
     {
         const string pattern = "Forbidden";
@@ -84,7 +84,7 @@ That Shepherd, who first taught the chosen Seed
         Assert.Equal(expected, Grep.Find(pattern, flags, files));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void One_file_one_match_case_insensitive_flag()
     {
         const string pattern = "Forbidden";
@@ -97,7 +97,7 @@ That Shepherd, who first taught the chosen Seed
         Assert.Equal(expected, Grep.Find(pattern, flags, files));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void One_file_one_match_print_file_names_flag()
     {
         const string pattern = "Forbidden";
@@ -110,7 +110,7 @@ That Shepherd, who first taught the chosen Seed
         Assert.Equal(expected, Grep.Find(pattern, flags, files));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void One_file_one_match_match_entire_lines_flag()
     {
         const string pattern = "With loss of Eden, till one greater Man";
@@ -123,7 +123,7 @@ That Shepherd, who first taught the chosen Seed
         Assert.Equal(expected, Grep.Find(pattern, flags, files));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void One_file_one_match_multiple_flags()
     {
         const string pattern = "OF ATREUS, Agamemnon, KIng of MEN.";
@@ -135,7 +135,7 @@ That Shepherd, who first taught the chosen Seed
         Assert.Equal(expected, Grep.Find(pattern, flags, files));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void One_file_several_matches_no_flags()
     {
         const string pattern = "may";
@@ -150,7 +150,7 @@ That Shepherd, who first taught the chosen Seed
         Assert.Equal(expected, Grep.Find(pattern, flags, files));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void One_file_several_matches_print_line_numbers_flag()
     {
         const string pattern = "may";
@@ -165,7 +165,7 @@ That Shepherd, who first taught the chosen Seed
         Assert.Equal(expected, Grep.Find(pattern, flags, files));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void One_file_several_matches_match_entire_lines_flag()
     {
         const string pattern = "may";
@@ -177,7 +177,7 @@ That Shepherd, who first taught the chosen Seed
         Assert.Equal(expected, Grep.Find(pattern, flags, files));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void One_file_several_matches_case_insensitive_flag()
     {
         const string pattern = "ACHILLES";
@@ -191,7 +191,7 @@ That Shepherd, who first taught the chosen Seed
         Assert.Equal(expected, Grep.Find(pattern, flags, files));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void One_file_several_matches_inverted_flag()
     {
         const string pattern = "Of";
@@ -208,7 +208,7 @@ That Shepherd, who first taught the chosen Seed
         Assert.Equal(expected, Grep.Find(pattern, flags, files));
     }
 
-    [Theory(Skip = "Remove to run test")]
+    [Theory]
     [InlineData("")]
     [InlineData("-n")]
     [InlineData("-l")]
@@ -224,7 +224,7 @@ That Shepherd, who first taught the chosen Seed
         Assert.Equal(expected, Grep.Find(pattern, flags, files));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void Multiple_files_one_match_no_flags()
     {
         const string pattern = "Agamemnon";
@@ -237,7 +237,7 @@ That Shepherd, who first taught the chosen Seed
         Assert.Equal(expected, Grep.Find(pattern, flags, files));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void Multiple_files_several_matches_no_flags()
     {
         const string pattern = "may";
@@ -252,7 +252,7 @@ That Shepherd, who first taught the chosen Seed
         Assert.Equal(expected, Grep.Find(pattern, flags, files));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void Multiple_files_several_matches_print_line_numbers_flag()
     {
         const string pattern = "that";
@@ -268,7 +268,7 @@ That Shepherd, who first taught the chosen Seed
         Assert.Equal(expected, Grep.Find(pattern, flags, files));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void Multiple_files_several_matches_print_file_names_flag()
     {
         const string pattern = "who";
@@ -282,7 +282,7 @@ That Shepherd, who first taught the chosen Seed
         Assert.Equal(expected, Grep.Find(pattern, flags, files));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void Multiple_files_several_matches_case_insensitive_flag()
     {
         const string pattern = "TO";
@@ -304,7 +304,7 @@ That Shepherd, who first taught the chosen Seed
         Assert.Equal(expected, Grep.Find(pattern, flags, files));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void Multiple_files_several_matches_inverted_flag()
     {
         const string pattern = "a";
@@ -319,7 +319,7 @@ That Shepherd, who first taught the chosen Seed
         Assert.Equal(expected, Grep.Find(pattern, flags, files));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void Multiple_files_one_match_match_entire_lines_flag()
     {
         const string pattern = "But I beseech your grace that I may know";
@@ -332,7 +332,7 @@ That Shepherd, who first taught the chosen Seed
         Assert.Equal(expected, Grep.Find(pattern, flags, files));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void Multiple_files_one_match_multiple_flags()
     {
         const string pattern = "WITH LOSS OF EDEN, TILL ONE GREATER MAN";
@@ -344,7 +344,7 @@ That Shepherd, who first taught the chosen Seed
         Assert.Equal(expected, Grep.Find(pattern, flags, files));
     }
 
-    [Theory(Skip = "Remove to run test")]
+    [Theory]
     [InlineData("")]
     [InlineData("-n")]
     [InlineData("-l")]

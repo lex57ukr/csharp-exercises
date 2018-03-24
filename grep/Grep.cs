@@ -149,15 +149,6 @@ public static class Grep
             .Select(x => result(fileName, x.lineNumber, x.text));
     }
 
-    private static bool Enabled(this Options options, Options mask)
-        => (options & mask) == mask;
-
-    private static Predicate<string> Not(Predicate<string> predicate)
-        => x => ! predicate(x);
-
-    private static string Join<T>(this IEnumerable<T> source, string delimiter)
-        => string.Join(delimiter, source);
-
     private static IEnumerable<string> ComposeResults(
         this IEnumerable<IEnumerable<string>> results,
         Options options
@@ -170,4 +161,13 @@ public static class Grep
 
         return results.Select(x => x.FirstOrDefault()).Where(x => x != null);
     }
+
+    private static bool Enabled(this Options options, Options mask)
+        => (options & mask) == mask;
+
+    private static Predicate<string> Not(Predicate<string> predicate)
+        => x => ! predicate(x);
+
+    private static string Join<T>(this IEnumerable<T> source, string delimiter)
+        => string.Join(delimiter, source);
 }

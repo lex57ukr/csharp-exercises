@@ -18,16 +18,12 @@ public static class Grep
 
         var results = files
             .Select(x => FindInFile(x, predicate, resultSelector))
-            .SelectMany(x => x)
-            .FilterResults(options)
+            .ComposeResults(options)
             .ToImmutableList();
 
-        if (results.IsEmpty)
-        {
-            return string.Empty;
-        }
-
-        return string.Join("\n", results.Add(string.Empty));
+        return results.IsEmpty
+            ? string.Empty
+            : results.Add(string.Empty).Join("\n");
     }
 
     [Flags]
@@ -162,13 +158,16 @@ public static class Grep
     private static string Join<T>(this IEnumerable<T> source, string delimiter)
         => string.Join(delimiter, source);
 
-    private static IEnumerable<string> FilterResults(
-        this IEnumerable<string> results,
+    private static IEnumerable<string> ComposeResults(
+        this IEnumerable<IEnumerable<string>> results,
         Options options
     )
     {
-        return options.Enabled(Options.PrintFileNamesOnly)
-            ? results.Distinct()
-            : results;
+        if (! options.Enabled(Options.PrintFileNamesOnly))
+        {
+            return results.SelectMany(x => x);
+        }
+
+        return results.Select(x => x.FirstOrDefault()).Where(x => x != null);
     }
 }

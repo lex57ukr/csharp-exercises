@@ -15,24 +15,25 @@ public static class Sublist
     public static SublistType Classify<T>(List<T> list1, List<T> list2)
         where T : IComparable
     {
-        if (list1.Count < list2.Count)
-        {
-            return Find(list1, list2, SublistType.Sublist);
-        }
-        else if (list1.Count > list2.Count)
+        if (list1.Count > list2.Count)
         {
             return Find(list2, list1, SublistType.Superlist);
         }
 
-        return Find(list1, list2, SublistType.Equal);
+        var type = list1.Count == list2.Count
+            ? SublistType.Equal
+            : SublistType.Sublist;
+
+        return Find(list1, list2, type);
     }
 
-    private static SublistType Find<T>(List<T> x, List<T> y, SublistType whenFound)
+    private static SublistType Find<T>(List<T> x, List<T> y, SublistType type)
     {
+        var comparer = EqualityComparer<T>.Default;
         for (var i = 0; i + x.Count <= y.Count; ++i)
         {
             int ix = 0, iy = i;
-            while (ix < x.Count && iy < y.Count && Equals(x[ix], y[iy]))
+            while (ix < x.Count && comparer.Equals(x[ix], y[iy]))
             {
                 ++ix;
                 ++iy;
@@ -40,12 +41,10 @@ public static class Sublist
 
             if (ix == x.Count)
             {
-                return whenFound;
+                return type;
             }
         }
 
         return SublistType.Unequal;
     }
-
-    private static bool Equals<T>(T x, T y) => EqualityComparer<T>.Default.Equals(x, y);
 }

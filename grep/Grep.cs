@@ -7,7 +7,6 @@ using System.Collections.Immutable;
 using static System.Linq.Enumerable;
 
 
-
 public static class Grep
 {
     public static string Find(string pattern, string flags, string[] files)
@@ -86,9 +85,9 @@ public static class Grep
             : RegexOptions.None;
     }
 
-    private static string AsRegexPattern(string patters, Options options)
+    private static string AsRegexPattern(string pattern, Options options)
     {
-        var escapedPattern = Regex.Escape(patters);
+        var escapedPattern = Regex.Escape(pattern);
 
         return options.Enabled(Options.MatchWholeLineOnly)
             ? $"^{escapedPattern}$"

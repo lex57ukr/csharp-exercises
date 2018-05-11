@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using static System.Linq.Enumerable;
 
 
 public enum SublistType
@@ -27,19 +28,15 @@ public static class Sublist
         return Find(list1, list2, type);
     }
 
-    private static SublistType Find<T>(List<T> x, List<T> y, SublistType type)
+    private static SublistType Find<T>(List<T> a, List<T> b, SublistType type)
     {
-        var comparer = EqualityComparer<T>.Default;
-        for (var i = 0; i + x.Count <= y.Count; ++i)
+        for (var i = 0; i + a.Count <= b.Count; ++i)
         {
-            int ix = 0, iy = i;
-            while (ix < x.Count && comparer.Equals(x[ix], y[iy]))
-            {
-                ++ix;
-                ++iy;
-            }
+            var found = a
+                .Zip(b.Skip(i), EqualityComparer<T>.Default.Equals)
+                .All(x => x);
 
-            if (ix == x.Count)
+            if (found)
             {
                 return type;
             }

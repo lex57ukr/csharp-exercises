@@ -29,13 +29,10 @@ public static class Sublist
 
     private static SublistType Find<T>(List<T> x, List<T> y, SublistType whenFound)
     {
-        var comparer = EqualityComparer<T>.Default;
-
-        int i = 0;
-        while (i + x.Count <= y.Count)
+        for (var i = 0; i + x.Count <= y.Count; ++i)
         {
-            int ix = 0, iy = i++;
-            while (ix < x.Count && iy < y.Count && comparer.Equals(x[ix], y[iy]))
+            int ix = 0, iy = i;
+            while (ix < x.Count && iy < y.Count && Equals(x[ix], y[iy]))
             {
                 ++ix;
                 ++iy;
@@ -49,4 +46,6 @@ public static class Sublist
 
         return SublistType.Unequal;
     }
+
+    private static bool Equals<T>(T x, T y) => EqualityComparer<T>.Default.Equals(x, y);
 }

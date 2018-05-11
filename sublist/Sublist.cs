@@ -30,18 +30,11 @@ public static class Sublist
 
     private static SublistType Find<T>(List<T> a, List<T> b, SublistType type)
     {
-        for (var i = 0; i + a.Count <= b.Count; ++i)
-        {
-            var found = a
-                .Zip(b.Skip(i), EqualityComparer<T>.Default.Equals)
-                .All(x => x);
+        bool Match(int n)
+            => a.Zip(b.Skip(n), EqualityComparer<T>.Default.Equals).All(x => x);
 
-            if (found)
-            {
-                return type;
-            }
-        }
-
-        return SublistType.Unequal;
+        return Range(0, b.Count - a.Count + 1).Select(Match).Any(x => x)
+            ? type
+            : SublistType.Unequal;
     }
 }

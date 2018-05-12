@@ -4,21 +4,41 @@ A rational number is defined as the quotient of two integers `a` and `b`, called
 
 The absolute value `|r|` of the rational number `r = a/b` is equal to `|a|/|b|`.
 
-The sum of two rational numbers `r1 = a1/b1` and `r2 = a2/b2` is `r1 + r2 = a1/b1 + a2/b2 = (a1 * b2 + a2 * b1) / (b1 * b2)`.
+The sum of two rational numbers `r1 = a1/b1` and `r2 = a2/b2`:
 
-The difference of two rational numbers `r1 = a1/b1` and `r2 = a2/b2` is `r1 - r2 = a1/b1 - a2/b2 = (a1 * b2 - a2 * b1) / (b1 * b2)`.
+```plain
+r1 + r2 = a1/b1 + a2/b2 = (a1 * b2 + a2 * b1) / (b1 * b2)
+```
 
-The product (multiplication) of two rational numbers `r1 = a1/b1` and `r2 = a2/b2` is `r1 * r2 = (a1 * a2) / (b1 * b2)`.
+The difference of two rational numbers `r1 = a1/b1` and `r2 = a2/b2`:
 
-Dividing a rational number `r1 = a1/b1` by another `r2 = a2/b2` is `r1 / r2 = (a1 * b2) / (a2 * b1)` if `a2 * b1` is not zero.
+```plain
+r1 - r2 = a1/b1 - a2/b2 = (a1 * b2 - a2 * b1) / (b1 * b2)
+```
 
-Exponentiation of a rational number `r = a/b` to a non-negative integer power `n` is `r^n = (a^n)/(b^n)`.
+The product (multiplication) of two rational numbers `r1 = a1/b1` and `r2 = a2/b2`:
 
-Exponentiation of a rational number `r = a/b` to a negative integer power `n` is `r^n = (b^m)/(a^m)`, where `m = |n|`.
+```plain
+r1 * r2 = (a1 * a2) / (b1 * b2)
+```
 
-Exponentiation of a rational number `r = a/b` to a real (floating-point) number `x` is the quotient `(a^x)/(b^x)`, which is a real number.
+Dividing a rational number `r1 = a1/b1` by another `r2 = a2/b2` (if `a2 * b1` is not zero):
 
-Exponentiation of a real number `x` to a rational number `r = a/b` is `x^(a/b) = root(x^a, b)`, where `root(p, q)` is the `q`th root of `p`.
+```plain
+r1 / r2 = (a1 * b2) / (a2 * b1)
+```
+
+Exponentiation of a rational number `r = a/b` to a non-negative integer power `n`:
+
+```plain
+r^n = (a^n)/(b^n)
+```
+
+Exponentiation of a rational number `r = a/b` to a negative integer power `n` (where `m = |n|`):
+
+```plain
+r^n = (b^m)/(a^m)
+```
 
 Implement the following operations:
 

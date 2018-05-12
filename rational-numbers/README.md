@@ -40,6 +40,12 @@ Exponentiation of a rational number `r = a/b` to a negative integer power `n` (w
 r^n = (b^m)/(a^m)
 ```
 
+Exponentiation of a real number `x` to a rational number `r = a/b` (where `root(p, q)` is the `qth` root of `p`.):
+
+```plain
+x^(a/b) = root(x^a, b)
+```
+
 Implement the following operations:
 
 - addition, subtraction, multiplication and division of two rational numbers,

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
+using static System.Linq.Enumerable;
 
 
 public static class RealNumberExtension
 {
     public static double Expreal(this int realNumber, RationalNumber r)
-    {
-        throw new NotImplementedException("You need to implement this extension method.");
-    }
+        => r.Expreal(realNumber);
 }
 
 public struct RationalNumber
@@ -18,15 +17,7 @@ public struct RationalNumber
     public RationalNumber(int numerator, int denominator)
     {
         _numerator   = numerator;
-        _denominator = denominator;
-    }
-
-    public RationalNumber Add(RationalNumber r)
-    {
-        return new RationalNumber(
-            _numerator * r._denominator + r._numerator * _denominator,
-            _denominator * r._denominator
-        );
+        _denominator = numerator == 0 ? 1 : denominator;
     }
 
     public override string ToString()
@@ -50,9 +41,14 @@ public struct RationalNumber
     }
 
     public bool Equals(RationalNumber other)
+        => _numerator == other._numerator && _denominator == other._denominator;
+
+    public RationalNumber Add(RationalNumber r)
     {
-        return _numerator   == other._numerator
-            && _denominator == other._denominator;
+        return new RationalNumber(
+            _numerator * r._denominator + r._numerator * _denominator,
+            _denominator * r._denominator
+        ).Reduce();
     }
 
     public static RationalNumber operator +(RationalNumber r1, RationalNumber r2)
@@ -60,51 +56,55 @@ public struct RationalNumber
 
     public RationalNumber Sub(RationalNumber r)
     {
-        throw new NotImplementedException("You need to implement this function.");
+        return new RationalNumber(
+            _numerator * r._denominator - r._numerator * _denominator,
+            _denominator * r._denominator
+        ).Reduce();
     }
 
     public static RationalNumber operator -(RationalNumber r1, RationalNumber r2)
-    {
-        throw new NotImplementedException("You need to implement this operator.");
-    }
+        => r1.Sub(r2);
 
     public RationalNumber Mul(RationalNumber r)
-    {
-        throw new NotImplementedException("You need to implement this function.");
-    }
+        => new RationalNumber(_numerator * r._numerator, _denominator * r._denominator).Reduce();
 
     public static RationalNumber operator *(RationalNumber r1, RationalNumber r2)
-    {
-        throw new NotImplementedException("You need to implement this operator.");
-    }
+        => r1.Mul(r2);
 
     public RationalNumber Div(RationalNumber r)
-    {
-        throw new NotImplementedException("You need to implement this function.");
-    }
+        => new RationalNumber(_numerator * r._denominator, r._numerator * _denominator).Reduce();
 
     public static RationalNumber operator /(RationalNumber r1, RationalNumber r2)
-    {
-        throw new NotImplementedException("You need to implement this operator.");
-    }
+        => r1.Div(r2);
 
     public RationalNumber Abs()
-    {
-        throw new NotImplementedException("You need to implement this function.");
-    }
+        => new RationalNumber(Math.Abs(_numerator), Math.Abs(_denominator));
 
     public RationalNumber Reduce()
     {
-        throw new NotImplementedException("You need to implement this function.");
+        var n = _numerator * Math.Sign(_denominator);
+        var d = Math.Abs(_denominator);
+
+        var gcb = Gcb(Math.Abs(n), d);
+
+        return new RationalNumber(n / gcb, d / gcb);
     }
 
     public RationalNumber Exprational(int power)
-    {
-        throw new NotImplementedException("You need to implement this function.");
-    }
+        => new RationalNumber(Pow(_numerator, power), Pow(_denominator, power));
 
     public double Expreal(int baseNumber)
+        => Root(Pow(baseNumber, _numerator), _denominator);
+
+    private static int Gcb(int a, int b)
+        => b == 0 ? a : Gcb(b, a % b);
+
+    private static int Pow(int a, int b)
+        => Repeat(a, b).Aggregate(1, (acc, x) => acc * x);
+
+    private static double Root(int a, int b)
     {
-        throw new NotImplementedException("You need to implement this function.");
+        // https://en.wikipedia.org/wiki/Nth_root_algorithm
+        throw new NotImplementedException();
     }
 }

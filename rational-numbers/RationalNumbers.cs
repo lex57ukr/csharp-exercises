@@ -94,7 +94,7 @@ public struct RationalNumber
         => new RationalNumber(Pow(_numerator, power), Pow(_denominator, power));
 
     public double Expreal(int baseNumber)
-        => Root(Pow(baseNumber, _numerator), _denominator);
+        => Root(Math.Pow(baseNumber, _numerator), _denominator);
 
     private static int Gcb(int a, int b)
         => b == 0 ? a : Gcb(b, a % b);
@@ -102,9 +102,27 @@ public struct RationalNumber
     private static int Pow(int a, int b)
         => Repeat(a, b).Aggregate(1, (acc, x) => acc * x);
 
-    private static double Root(int a, int b)
+    private static double Root(double a, int b)
     {
-        // https://en.wikipedia.org/wiki/Nth_root_algorithm
-        throw new NotImplementedException();
+        double f(double x) => Math.Pow(x, b) - a;
+        double d(double x) => b * Math.Pow(x, b - 1);
+
+        return Newton(f, d, guess: 1 + (a - 1) / b);
     }
+
+    private static double Newton(Func<double, double> f, Func<double, double> d, double guess)
+    {
+        double p, x = guess;
+
+        do
+        {
+            p = x;
+            x = x - f(x) / d(x);
+        } while (! Equals(x, p));
+
+        return x;
+    }
+
+    private static bool Equals(double x, double y)
+        => Math.Abs(x - y) <= 0.000_000_000_000_001;
 }

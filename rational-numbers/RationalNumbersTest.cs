@@ -309,7 +309,7 @@ public class RationalNumbersTest
         );
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void Raise_a_real_number_to_a_negative_rational_number()
     {
         Assert.Equal(
@@ -319,7 +319,7 @@ public class RationalNumbersTest
         );
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void Raise_a_real_number_to_a_zero_rational_number()
     {
         Assert.Equal(

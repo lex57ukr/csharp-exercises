@@ -103,26 +103,5 @@ public struct RationalNumber
         => Repeat(a, b).Aggregate(1, (acc, x) => acc * x);
 
     private static double Root(double a, int b)
-    {
-        double f(double x) => Math.Pow(x, b) - a;
-        double d(double x) => b * Math.Pow(x, b - 1);
-
-        return Newton(f, d, guess: 1 + (a - 1) / b);
-    }
-
-    private static double Newton(Func<double, double> f, Func<double, double> d, double guess)
-    {
-        double p, x = guess;
-
-        do
-        {
-            p = x;
-            x = x - f(x) / d(x);
-        } while (! Equals(x, p));
-
-        return x;
-    }
-
-    private static bool Equals(double x, double y)
-        => Math.Abs(x - y) <= 0.000_000_000_000_001;
+        => Math.Pow(a, 1d / b);
 }

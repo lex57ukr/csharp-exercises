@@ -13,9 +13,7 @@ public class Tree
 {
     public int Id { get; set; }
     public int ParentId { get; set; }
-
     public List<Tree> Children { get; set; }
-
     public bool IsLeaf => Children.Count == 0;
 }
 
@@ -23,10 +21,13 @@ public static class TreeBuilder
 {
     public static Tree BuildTree(IEnumerable<TreeBuildingRecord> records)
     {
-        var recordsArray = records.OrderBy(x => x.RecordId).ToArray();
-        AssertNodesIntegrity(recordsArray);
+        var orderedRecords = records.OrderBy(x => x.RecordId).ToArray();
+        if (! orderedRecords.Valid())
+        {
+            throw new ArgumentException();
+        }
 
-        var nodes = recordsArray.Select(ToTreeNode).ToArray();
+        var nodes = orderedRecords.Select(MakeTreeNode).ToArray();
         foreach (var child in nodes.Skip(1))
         {
             nodes[child.ParentId].Children.Add(child);
@@ -35,37 +36,20 @@ public static class TreeBuilder
         return nodes[0];
     }
 
-    private static Tree ToTreeNode(TreeBuildingRecord record)
-        => new Tree {Id = record.RecordId, ParentId = record.ParentId, Children = new List<Tree>()};
+    private static Tree MakeTreeNode(TreeBuildingRecord x)
+        => new Tree {Id = x.RecordId, ParentId = x.ParentId, Children = new List<Tree>()};
 
-    private static void AssertNodesIntegrity(IReadOnlyList<TreeBuildingRecord> records)
+    private static bool Valid(this IReadOnlyList<TreeBuildingRecord> records)
     {
-        if (records.Count == 0)
-        {
-            throw new ArgumentException("Empty records.");
-        }
+        bool IsValidParentId(TreeBuildingRecord x)
+            => x.ParentId < x.RecordId && x.ParentId < records.Count;
 
-        if (! IsValidRoot(records[0]))
-        {
-            throw new ArgumentException("Missing root.");
-        }
+        bool IsValidChild(TreeBuildingRecord x, int i)
+            => x.RecordId == (i + 1) && IsValidParentId(x);
 
-        var allChildrenValid = records.Skip(1).Select(
-            (x, i) => IsValidRecordId(x, i + 1) && IsValidParentId(x, records.Count)
-        ).All(x => x);
-
-        if (! allChildrenValid)
-        {
-            throw new ArgumentException("Invalid records.");
-        }
+        return records.Count != 0
+            && records[0].RecordId == 0
+            && records[0].ParentId == 0
+            && records.Skip(1).Select(IsValidChild).All(x => x);
     }
-
-    private static bool IsValidRoot(TreeBuildingRecord x)
-        => x.ParentId == 0 && IsValidRecordId(x, 0);
-
-    private static bool IsValidRecordId(TreeBuildingRecord x, int id)
-        => x.RecordId == id;
-
-    private static bool IsValidParentId(TreeBuildingRecord x, int count)
-        => x.ParentId < x.RecordId && x.ParentId < count;
 }

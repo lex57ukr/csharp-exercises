@@ -15,22 +15,25 @@ written like this:
 
 A, Bb, B, C, Db, D, Eb, E, F, Gb, G, Ab
 
-The major and minor scale and modes are subsets of this twelve-pitch
-collection. They have seven pitches, and are called diatonic scales.
+The *major* and *minor* scale, and modes are subsets of this twelve-pitch
+collection. They have seven pitches, and are called *diatonic* scales.
 The collection of notes in these scales is written with either sharps or
 flats, depending on the tonic. Here is a list of which are which:
 
 No Accidentals:
-C major
-A minor
+
+* C major
+* A minor
 
 Use Sharps:
-G, D, A, E, B, F# major
-e, b, f#, c#, g#, d# minor
+
+* G, D, A, E, B, F# major
+* e, b, f#, c#, g#, d# minor
 
 Use Flats:
-F, Bb, Eb, Ab, Db, Gb major
-d, g, c, f, bb, eb minor
+
+* F, Bb, Eb, Ab, Db, Gb major
+* d, g, c, f, bb, eb minor
 
 The diatonic scales, and all other scales that derive from the
 chromatic scale, are built upon intervals. An interval is the space

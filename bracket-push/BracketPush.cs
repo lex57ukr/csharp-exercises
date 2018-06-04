@@ -8,7 +8,7 @@ public static class BracketPush
     public static bool IsPaired(string input)
     {
         var track = new Stack<char>();
-        return input.All(track.IsBalanced) && track.Count == 0;
+        return input.All(track.Balance) && track.Count == 0;
     }
 
     private static readonly (char open, char close)[] BracketPairs =
@@ -16,7 +16,7 @@ public static class BracketPush
         ('[', ']'), ('{', '}'), ('(', ')')
     };
 
-    private static bool IsBalanced(this Stack<char> track, char c)
+    private static bool Balance(this Stack<char> track, char c)
     {
         var pair = Array.Find(BracketPairs, x => c == x.open || c == x.close);
 

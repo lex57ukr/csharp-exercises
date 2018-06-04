@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 
@@ -7,15 +8,7 @@ public static class BracketPush
     public static bool IsPaired(string input)
     {
         var track = new Stack<char>();
-        foreach (char c in input)
-        {
-            if (! IsBalanced(c, track))
-            {
-                return false;
-            }
-        }
-
-        return track.Count == 0;
+        return input.All(track.IsBalanced) && track.Count == 0;
     }
 
     private static readonly (char open, char close)[] BracketPairs =
@@ -23,7 +16,7 @@ public static class BracketPush
         ('[', ']'), ('{', '}'), ('(', ')')
     };
 
-    private static bool IsBalanced(char c, Stack<char> track)
+    private static bool IsBalanced(this Stack<char> track, char c)
     {
         var pair = Array.Find(BracketPairs, x => c == x.open || c == x.close);
 

@@ -3,75 +3,37 @@ using System;
 
 public class Deque<T>
 {
-    private Node _head, _tail;
+    private Node _root = new Node();
 
-    public void Push(T value)
-        => _tail = Add(new Node(value, head: _tail), ref _head);
+    public void Push(T value) => _root.Prev.Append(value);
+    public T Pop() => _root.Prev.Remove();
+    public void Unshift(T value) => _root.Append(value);
+    public T Shift() => _root.Next.Remove();
 
-    public T Pop() => Remove(_tail, _tail.UnlinkPrev, ref _tail);
-
-    public void Unshift(T value)
-        => _head = Add(new Node(value, tail: _head), ref _tail);
-
-    public T Shift() => Remove(_head, _head.UnlinkNext, ref _head);
-
-    private static Node Add(Node node, ref Node root)
+    private class Node
     {
-        if (root == null)
+        public T Value { get; set; }
+        public Node Prev { get; set; }
+        public Node Next { get; set; }
+
+        public Node() => this.Next = this.Prev = this;
+
+        public void Append(T value)
         {
-            root = node;
+            this.Next = this.Next.Prev = new Node
+            {
+                Value = value,
+                Prev  = this,
+                Next  = this.Next,
+            };
         }
 
-        return node;
-    }
-
-    private static T Remove(Node node, Func<Node> f, ref Node root)
-    {
-        root = f();
-        return node.Value;
-    }
-
-    internal class Node
-    {
-        public T Value { get; }
-        private Node Prev { get; set; }
-        private Node Next { get; set; }
-
-        public Node (T value, Node head = null, Node tail = null)
+        public T Remove()
         {
-            this.Value = value;
+            this.Prev.Next = this.Next;
+            this.Next.Prev = this.Prev;
 
-            this.Prev = head;
-            if (head != null)
-            {
-                head.Next = this;
-            }
-
-            this.Next = tail;
-            if (tail != null)
-            {
-                tail.Prev = this;
-            }
-        }
-
-        public Node UnlinkPrev()
-        {
-            if (this.Prev != null)
-            {
-                this.Prev.Next = null;
-            }
-
-            return this.Prev;
-        }
-
-        public Node UnlinkNext()
-        {
-            if (this.Next != null)
-            {
-                this.Next.Prev = null;
-            }
-
-            return this.Next;
+            return this.Value;
         }
     }
 }

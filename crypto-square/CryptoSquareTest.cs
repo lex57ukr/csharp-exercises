@@ -13,7 +13,7 @@ public class CryptoSquareTest
         Assert.Equal(expected, CryptoSquare.Ciphertext(plaintext));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void Lowercase()
     {
         var plaintext = "A";
@@ -21,7 +21,7 @@ public class CryptoSquareTest
         Assert.Equal(expected, CryptoSquare.Ciphertext(plaintext));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void Remove_spaces()
     {
         var plaintext = "  b ";
@@ -29,7 +29,7 @@ public class CryptoSquareTest
         Assert.Equal(expected, CryptoSquare.Ciphertext(plaintext));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void Remove_punctuation()
     {
         var plaintext = "@1,%!";
@@ -37,7 +37,7 @@ public class CryptoSquareTest
         Assert.Equal(expected, CryptoSquare.Ciphertext(plaintext));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void Number_9_character_plaintext_results_in_3_chunks_of_3_characters()
     {
         var plaintext = "This is fun!";
@@ -45,7 +45,7 @@ public class CryptoSquareTest
         Assert.Equal(expected, CryptoSquare.Ciphertext(plaintext));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void Number_8_character_plaintext_results_in_3_chunks_the_last_one_with_a_trailing_space()
     {
         var plaintext = "Chill out.";
@@ -53,7 +53,7 @@ public class CryptoSquareTest
         Assert.Equal(expected, CryptoSquare.Ciphertext(plaintext));
     }
 
-    [Fact(Skip = "Remove to run test")]
+    [Fact]
     public void Number_54_character_plaintext_results_in_7_chunks_the_last_two_with_trailing_spaces()
     {
         var plaintext = "If man was meant to stay on the ground, god would have given us roots.";

@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using static System.Linq.Enumerable;
 
 
@@ -26,13 +25,11 @@ public static class CryptoSquare
     private static (int rows, int cols) GetDimensions(int length)
     {
         var cols = (int) Math.Ceiling(Math.Sqrt(length));
-        var rows = (int) Math.Ceiling((double) length / cols);
-
-        return (rows, cols);
+        return ((int) Math.Ceiling((double) length / cols), cols);
     }
 
     private static string ToNormalForm(string text)
-        => Regex.Replace(text, @"([^\w]|\s)+", "").ToLower();
+        => string.Concat(text.Where(char.IsLetterOrDigit).Select(char.ToLower));
 
     private static string ToCipherForm(char[,] acc)
     {

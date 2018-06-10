@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using System.Collections.Generic;
+using static System.Math;
 using static System.Linq.Enumerable;
 
 
@@ -24,8 +24,8 @@ public static class CryptoSquare
 
     private static (int rows, int cols) GetDimensions(int length)
     {
-        var cols = (int) Math.Ceiling(Math.Sqrt(length));
-        return ((int) Math.Ceiling((double) length / cols), cols);
+        var cols = (int) Ceiling(Sqrt(length));
+        return ((int) Ceiling((double) length / cols), cols);
     }
 
     private static string ToNormalForm(string text)
@@ -33,11 +33,11 @@ public static class CryptoSquare
 
     private static string ToCipherForm(char[,] acc)
     {
-        var lines = Range(0, acc.GetLength(1)).Select(
-            c => Range(0, acc.GetLength(0)).Select(r => acc[r, c])
-        ).Select(string.Concat<char>);
+        var blocks = Range(0, acc.GetLength(1))
+            .Select(c => Range(0, acc.GetLength(0)).Select(r => acc[r, c]))
+            .Select(string.Concat<char>);
 
-        return string.Join(" ", lines);
+        return string.Join(" ", blocks);
     }
 
     private static char[,] ComposeRow(char[,] acc, IGrouping<int, char> g)

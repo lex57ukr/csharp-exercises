@@ -27,8 +27,9 @@ public static class Markdown
                     .First(r => null != r);
 
                 return acc.Append(html, line.IsListItem());
-            }
-        ).CloseList().ToString();
+            },
+            acc => acc.CloseList().ToString()
+        );
 
     static (StringBuilder buff, bool list) Append(
         this (StringBuilder buff, bool list) acc,

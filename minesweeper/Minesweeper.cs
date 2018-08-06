@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using static System.Linq.Enumerable;
 
 
@@ -28,23 +27,25 @@ public static class Minesweeper
             (x, h) => new { x.Point, Char = Render(input, x.Point, h.Hits) }
         );
 
-        var build = annotations.Aggregate(
-            (Row: 0, Rows: ImmutableList<string>.Empty, Chars: ImmutableList<char>.Empty),
-            (acc, x) => {
-                var (row, rows, chars) = acc;
-
-                if (row != x.Point.Row)
+        return annotations.Aggregate(
+            (Row: 0, Rows: new List<string>(input.Length), Chars: new List<char>()),
+            (acc, x) =>
+            {
+                if (acc.Row != x.Point.Row)
                 {
-                    rows  = Finalize(rows, chars);
-                    chars = ImmutableList<char>.Empty;
+                    Finalize(acc.Rows, acc.Chars);
+                    acc.Chars.Clear();
                 }
 
-                chars = chars.Add(x.Char);
-                return (x.Point.Row, rows, chars);
+                acc.Chars.Add(x.Char);
+                return (x.Point.Row, acc.Rows, acc.Chars);
+            },
+            acc =>
+            {
+                Finalize(acc.Rows, acc.Chars);
+                return acc.Rows.ToArray();
             }
         );
-
-        return Finalize(build.Rows, build.Chars).ToArray();
     }
 
     private static IEnumerable<(int Row, int Column)> Hits((int Row, int Column) point)
@@ -79,8 +80,6 @@ public static class Minesweeper
     private static char ToChar(int hits)
         => (char) ((int) '0' + hits);
 
-    private static ImmutableList<string> Finalize(
-        ImmutableList<string> rows,
-        IEnumerable<char> chars
-    ) => rows.Add(string.Concat(chars));
+    private static void Finalize(List<string> rows, IEnumerable<char> chars)
+        => rows.Add(new string(chars.ToArray()));
 }
